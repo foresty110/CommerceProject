@@ -1,15 +1,12 @@
 package commerce;
 
 public class Product {
-    //TODO
+
     private String name;
     private int price;
     private String description;
     private int quantity;
 
-    public Product() {
-
-    }
     public Product(String name, int price, String description) {
         this.name = name;
         this.price = price;
