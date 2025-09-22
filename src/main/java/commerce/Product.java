@@ -7,13 +7,18 @@ public class Product {
     private String description;
     private int quantity;
 
-    public Product(String name, int price, String description) {
+    public Product(String name, int price, String description, int quantity) {
         this.name = name;
         this.price = price;
         this.description = description;
+        this.quantity = quantity;
     }
 
     public String toString(){
-        return this.name + "\t |" + this.price + "\t |" + this.description;
+        return this.name + "\t | " + this.price + "원\t | " + this.description;
+    }
+
+    public String toStringDetail(){
+        return this.name + "\t | " + this.price + "원\t | " + this.description + "\t | 재고:" + this.quantity;
     }
 }
