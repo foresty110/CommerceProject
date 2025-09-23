@@ -29,4 +29,12 @@ public class Product {
     public void subQuantity(int value) {
         this.stockQuantity -= value;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
 }

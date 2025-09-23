@@ -4,9 +4,8 @@ public class CartItem {
     private Product product;
     private int quantity;
 
-    public CartItem(Product product, int quantity) {
+    public CartItem(Product product) {
         this.product = product;
-        this.quantity = quantity;
     }
 
     public Product getProduct() {
@@ -15,5 +14,13 @@ public class CartItem {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public void addQuantity() {
+        this.quantity ++;
+    }
+
+   public String toString(){
+        return product.toString() + " 수량:" + quantity;
     }
 }
