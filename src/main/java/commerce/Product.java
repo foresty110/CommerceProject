@@ -5,13 +5,13 @@ public class Product {
     private String name;
     private int price;
     private String description;
-    private int quantity;
+    private int stockQuantity;
 
     public Product(String name, int price, String description, int quantity) {
         this.name = name;
         this.price = price;
         this.description = description;
-        this.quantity = quantity;
+        this.stockQuantity = quantity;
     }
 
     public String toString(){
@@ -19,6 +19,6 @@ public class Product {
     }
 
     public String toStringDetail(){
-        return this.name + "\t | " + this.price + "원\t | " + this.description + "\t | 재고:" + this.quantity;
+        return this.name + "\t | " + this.price + "원\t | " + this.description + "\t | 재고:" + this.stockQuantity;
     }
 }

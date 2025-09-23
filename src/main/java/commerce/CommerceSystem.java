@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class CommerceSystem {
 
     private List<Category> categories = new ArrayList<>();
+    private Cart cart = new Cart();
 
     public void addCategory(Category category) {
         categories.add(category);
@@ -97,16 +98,21 @@ public class CommerceSystem {
                 continue;
             } else if (product > getCategory(menu - 1).getProductsSize()) {
                 System.out.println("잘못된 입력입니다.");
+                continue;
             }
 
             // 상품 상세 정보 출력하기
-            for (int i = 0; i < getCategory(menu -1).getProductsSize(); i++) {
+            for (int i = 0; i < getCategory(menu - 1).getProductsSize(); i++) {
                 if (product - 1 == i) {
                     Product p = getCategory(menu - 1).getProducts(i);
                     System.out.println("선택한 상품: " + p.toStringDetail());
 
+                    //장바구니 추가
+                    cart.addItem(new CartItem(p,1));
+
                 }
             }
+
 
         }
     }
