@@ -21,4 +21,12 @@ public class Product {
     public String toStringDetail(){
         return this.name + "\t | " + this.price + "원\t | " + this.description + "\t | 재고:" + this.stockQuantity;
     }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void subQuantity(int value) {
+        this.stockQuantity -= value;
+    }
 }

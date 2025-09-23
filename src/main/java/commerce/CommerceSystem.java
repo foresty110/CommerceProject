@@ -107,13 +107,16 @@ public class CommerceSystem {
                     Product p = getCategory(menu - 1).getProducts(i);
                     System.out.println("선택한 상품: " + p.toStringDetail());
 
-                    //장바구니 추가
-                    cart.addItem(new CartItem(p,1));
+                    //재고 관리 & 장바구니 추가
+                    if(!cart.canAddToCart(p))
+                    {
+                        System.out.println("재고가 없습니다.");
+                    }
+
+                    cart.addItem(new CartItem(p, 1));
 
                 }
             }
-
-
         }
     }
 }
