@@ -38,11 +38,14 @@ public class Category {
         return products.size();
     }
 
-    public void showProductsInfo() {
+    public String showProductsInfo() {
+        String info="";
         int count = 1;
         for (Product p : products) {
-            System.out.println(count++ + ". " + p.toString());
+            info += count++ + ". " + p.toString()+"\n";
         }
+
+        return info;
     }
 
 
