@@ -10,6 +10,7 @@ public class CommerceSystem {
     private Scanner scanner = new Scanner(System.in);
     private List<Category> categories = new ArrayList<>();
     private Cart cart = new Cart();
+    private ScannerSystem scannerSystem = new ScannerSystem();
 
     private final String PASSWORD = "admin123";
 
@@ -163,10 +164,6 @@ public class CommerceSystem {
                 continue;
             }
 
-            //질문1
-            //CartItem을 생성해서 전달하는 방식과 매서드 내부에서 CartItem을 생성하는 방식 중 어느 것이 좋은지
-            //매번 생성해야하면 사용자가 번거로우니까 캡슐화 시켜서 매서드 내부에서 생성하게 하는게 좋을 것 같은데
-            //생성해서 전달하는 것의 이점이 있는건지? 이렇게 사용하기도 하는 것인지?
             cart.addItem(new CartItem(product));
             System.out.println(product.getName() + "가 장바구니에 추가되었습니다.");
 
@@ -280,13 +277,10 @@ public class CommerceSystem {
         System.out.println("3. 식품");
 
         //카테고리 번호 입력
-        int inputCategory;
+
         System.out.println("카테고리 번호를 입력하세요: ");
-        try {
-            inputCategory = scanner.nextInt();
-            scanner.nextLine(); //줄바꿈 제거
-        } catch (InputMismatchException e) {
-            System.out.println("숫자를 입력해 주세요.");
+        Integer inputCategory = scannerSystem.validateInput(1,categories.size());
+        if (inputCategory == null) {
             return false;
         }
 
@@ -363,34 +357,22 @@ public class CommerceSystem {
         System.out.println("2. 의류");
         System.out.println("3. 식품");
 
-        //카테고리 번호 입력
-        int inputCategory;
+        // 카테고리 번호 입력
         System.out.println("카테고리 번호를 입력하세요: ");
-        try {
-            inputCategory = scanner.nextInt();
-            scanner.nextLine(); //줄바꿈 제거
-        } catch (InputMismatchException e) {
-            System.out.println("숫자를 입력해 주세요.");
+        Integer pickCategory = scannerSystem.validateInput(1,categories.size());
+
+        if (pickCategory == null) {
             return false;
         }
 
         // 상품 목록 출력
-        Category productList = getCategory(inputCategory);
-        if (productList == null) {
-            System.out.println("존재하지 않는 카테고리입니다.");
-            return false;
-        }
-
+        Category productList = getCategory((int) pickCategory);
         productList.showProductsInfo();
 
         //수정할 상품 번호 입력
         System.out.println("수정할 항목을 선택하세요.");
-        int inputProduct;
-        try {
-            inputProduct = scanner.nextInt();
-            scanner.nextLine(); //줄바꿈 제거
-        } catch (InputMismatchException e) {
-            System.out.println("숫자를 입력해 주세요.");
+        Integer inputProduct = scannerSystem.validateInput(1,productList.getProductsSize());
+        if (inputProduct == null) {
             return false;
         }
 
@@ -407,14 +389,8 @@ public class CommerceSystem {
         System.out.println(" 수정할 항목을 선택해주세요:");
         System.out.println("1. 가격\n2. 설명\n3. 재고수량");
 
-        int userEditIdx = 0;
-        try {
-
-            userEditIdx = scanner.nextInt();
-            scanner.nextLine(); //줄바꿈 제거
-
-        } catch (InputMismatchException e) {
-            System.out.println("숫자를 입력해 주세요.");
+        Integer userEditIdx = scannerSystem.validateInput(1,3);
+        if (userEditIdx == null) {
             return false;
         }
 
@@ -427,12 +403,6 @@ public class CommerceSystem {
                 System.out.print("새로운 가격을 입력하세요: ");
                 int inputPrice = scanner.nextInt();
                 scanner.nextLine(); //줄바꿈 제거
-
-                //예외처리
-                if (inputPrice < 0) {
-                    System.out.println("0 미만 값으로 변경할 수 없습니다. ");
-                    return false;
-                }
 
                 // 수정하기
                 oldProduct.setPrice(inputPrice);
@@ -486,6 +456,7 @@ public class CommerceSystem {
 
         return true;
     }
+
 }
 
 
