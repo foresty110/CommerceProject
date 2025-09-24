@@ -7,6 +7,11 @@ public class Cart {
 
     private List<CartItem> items = new ArrayList<>();
 
+    //질문3
+    //- CartItem가 상품 이름,가격 정보를 필드로 가지고 있게 변경하기
+    // 지금은 CartItem이 상품 객체를 가지고 있고 이것을 통해서 상품의 데이터를 접근하고 있음
+    // 생각하기에 필드를 가지고 있게 변경하면 코드가 간결해질 것 같은데 대신에 데이터 변경시 두번씩해줘야하는 번거로움이 생길 것 같음
+
     public void addItem(CartItem newItem) {
 
         //이미 장바구니에 있던 상품이라면

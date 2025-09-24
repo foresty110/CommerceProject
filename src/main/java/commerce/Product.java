@@ -37,4 +37,21 @@ public class Product {
     public int getPrice() {
         return price;
     }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
 }

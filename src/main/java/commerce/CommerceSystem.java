@@ -11,12 +11,19 @@ public class CommerceSystem {
     private List<Category> categories = new ArrayList<>();
     private Cart cart = new Cart();
 
+    private final String PASSWORD = "admin123";
+
     public void addCategory(Category category) {
         categories.add(category);
     }
 
     public Category getCategory(int idx) {
-        return categories.get(idx);
+
+        if (categories.size() < idx || idx < 1) {
+            return null;
+        }
+
+        return categories.get(idx - 1);
     }
 
     public void start() {
@@ -56,50 +63,57 @@ public class CommerceSystem {
         this.addCategory(clothing);
         this.addCategory(food);
 
+        //---------------------------------------------------------------------------------------------------
+
         // 사용자로부터 입력받기
         while (true) {
 
-            // 전자제품 목록 출력
+            // 카테고리 목록 출력
             System.out.println("\n[ 실시간 커머스 플랫폼 메인 ]");
             int count = 0;
             for (Category category : categories) {
                 System.out.println(++count + ". " + category.getName());
             }
             if (cart.getCartItemAmount() > 0) {
-                System.out.println(++count + ". 장바구니 확인\t| 장바구니를 확인 후 주문합니다.");
-                System.out.println(++count + ". 주문 취소\t| 진행중인 주문을 취소합니다.");
+                System.out.println("4. 장바구니 확인\t| 장바구니를 확인 후 주문합니다.");
+                System.out.println("5. 주문 취소\t| 진행중인 주문을 취소합니다.");
             }
-
+            System.out.println("6. 관리자 모드");
             System.out.println("0. 프로그램 종료");
             System.out.print("번호를 선택하세요: ");
 
 
-            int menu;
             // 카테고리 번호 입력 받기
+            int menu;
             try {
                 menu = scanner.nextInt();
-                if (menu == 0) {
-                    System.out.println(" 커머스 플랫폼을 종료합니다.");
-                    break;
-                } else if (menu > count) {
-                    System.out.println("메뉴 번호 중 하나를 입력해 주세요.");
-                    continue;
-                }
             } catch (InputMismatchException e) {
                 System.out.println("숫자를 입력해 주세요");
                 continue;
             }
 
-            if (menu == 4) {
+
+            if (menu == 0) {
+                System.out.println(" 커머스 플랫폼을 종료합니다.");
+                break;
+            } else if (menu == 4 && cart.getCartItemAmount() > 0) {
                 order();
                 continue;
-            }
+            } else if (menu == 5 && cart.getCartItemAmount() > 0) {
 
+            } else if (menu == 6) {
+                //  관리자 모드
+                management();
+                continue;
+            } else if (menu > 6 || menu < 0){
+                System.out.println("메뉴 번호 중 하나를 입력해 주세요.");
+                continue;
+            }
 
             // 선택한 카테고리의 상품 데이터 출력
             for (int i = 0; i < categories.size(); i++) {
                 if (menu - 1 == i) {
-                    getCategory(i).showProductsInfo();
+                    getCategory(menu).showProductsInfo();
                 }
             }
             System.out.print("0. 뒤로가기 \n 번호를 선택하세요: ");
@@ -109,20 +123,21 @@ public class CommerceSystem {
 
             if (pickProduct == 0) {
                 continue;
-            } else if (pickProduct > getCategory(menu - 1).getProductsSize()) {
+            } else if (pickProduct > getCategory(menu).getProductsSize()) {
                 System.out.println("잘못된 입력입니다.");
                 continue;
             }
 
             // 상품 상세 정보 출력하기
             Product product = null;
-            for (int i = 0; i < getCategory(menu - 1).getProductsSize(); i++) {
+            for (int i = 0; i < getCategory(menu).getProductsSize(); i++) {
                 if (pickProduct - 1 == i) {
-                    product = getCategory(menu - 1).getProducts(i);
+                    product = getCategory(menu).getProducts(pickProduct);
                     System.out.println("선택한 상품: " + product.toStringDetail());
                 }
             }
 
+            // 장바구니 -----------------------------------------------------------------------------
 
             System.out.println("위 상품을 장바구니에 추가하시겠습니까?");
             System.out.println("1.확인 \t 2.취소");
@@ -148,6 +163,10 @@ public class CommerceSystem {
                 continue;
             }
 
+            //질문1
+            //CartItem을 생성해서 전달하는 방식과 매서드 내부에서 CartItem을 생성하는 방식 중 어느 것이 좋은지
+            //매번 생성해야하면 사용자가 번거로우니까 캡슐화 시켜서 매서드 내부에서 생성하게 하는게 좋을 것 같은데
+            //생성해서 전달하는 것의 이점이 있는건지? 이렇게 사용하기도 하는 것인지?
             cart.addItem(new CartItem(product));
             System.out.println(product.getName() + "가 장바구니에 추가되었습니다.");
 
@@ -175,15 +194,297 @@ public class CommerceSystem {
         }
 
         if (input == 1) {
-            System.out.println("주문이 완료되었습니다 !총 금액: "+ cart.getTotalPrice()+"원");
+            System.out.println("주문이 완료되었습니다 !총 금액: " + cart.getTotalPrice() + "원");
             cart.purchase();
-        }else if (input == 2) {
+        } else if (input == 2) {
             System.out.println("메인 화면으로 돌아갑니다.");
-        }else{
+        } else {
             System.out.println("메뉴 번호를 입력해 주세요.");
         }
 
 
+    }
+
+    public boolean management() {
+
+        //비밀번호 인증
+        int accessCount = 3;
+        for (int i = 1; i <= accessCount; i++) {
+            System.out.print("비밀번호를 입력하세요: ");
+            scanner.nextLine(); //줄바꿈 제거
+            String inputPassword = scanner.nextLine();
+            System.out.println("ps " + inputPassword);
+            if (PASSWORD.equals(inputPassword)) {
+                break;
+            } else if (i == accessCount) {
+                System.out.println("비밀번호 3회 입력 실패. 메인으로 돌아갑니다.");
+                return false;
+            } else {
+                System.out.println("비밀번호가 다릅니다.");
+            }
+        }
+
+        //관리자 모드 선택
+
+        System.out.println("[ 관리자 모드 ]");
+        System.out.println("1. 상품 추가" +
+                "\n2. 상품 수정" +
+                "\n3. 상품 삭제" +
+                "\n4. 전체 상품 현황" +
+                "\n0. 메인으로 돌아가기");
+
+        //관리자 모드 번호 입력
+
+        int userManageMenu;
+        System.out.println("관리자 모드 번호를 입력하세요: ");
+        try {
+            userManageMenu = scanner.nextInt();
+            scanner.nextLine(); //줄바꿈 제거
+        } catch (InputMismatchException e) {
+            System.out.println("숫자를 입력해 주세요.");
+            return false;
+        }
+
+        // 관리자 모드 메뉴 실행
+
+        switch (userManageMenu) {
+            case 1:
+                //상품 추가
+                if (!addProduct())
+                    return false;
+                break;
+            case 2:
+                modifyProduct();
+                break;
+            case 3:
+                /*
+                - [ ]  **상품 삭제 기능**
+                    - [ ]  기존 상품을 카테고리에서 제거
+                - [ ]  삭제 전 확인 메시지 출력
+                    - [ ]  삭제된 상품이 장바구니에 있다면 장바구니에서도 제거*/
+                break;
+            default:
+                System.out.println("잘못된 메뉴 입력입니다.");
+                return false;
+        }
+
+
+        return true;
+    }
+
+    public boolean addProduct() {
+        //카테고리 선택
+        System.out.println("어느 카테고리에 상품을 추가하시겠습니까?");
+        System.out.println("1. 전자제품");
+        System.out.println("2. 의류");
+        System.out.println("3. 식품");
+
+        //카테고리 번호 입력
+        int inputCategory;
+        System.out.println("카테고리 번호를 입력하세요: ");
+        try {
+            inputCategory = scanner.nextInt();
+            scanner.nextLine(); //줄바꿈 제거
+        } catch (InputMismatchException e) {
+            System.out.println("숫자를 입력해 주세요.");
+            return false;
+        }
+
+        System.out.println("/" + inputCategory + "/");
+        String categoryName = getCategory(inputCategory).getName();
+        System.out.println("[ " + categoryName + " 카테고리에 상품 추가 ]");
+
+        // 상품 정보 입력받기
+        Product product;
+        try {
+
+            System.out.print("이름을 입력하세요: ");
+            String inputName = scanner.nextLine();
+
+            System.out.println("가격을 입력하세요: ");
+            int inputPrice = scanner.nextInt();
+
+            scanner.nextLine(); //줄바꿈 제거
+
+            System.out.println("상품 설명을 입력하세요: ");
+            String inputDescription = scanner.nextLine();
+
+            System.out.print("재고 수량을 입력하세요: ");
+            int inputStock = scanner.nextInt();
+
+            product = new Product(inputName, inputPrice, inputDescription, inputStock);
+
+            if (inputName.isEmpty() || inputDescription.isEmpty()) {
+                System.out.println("상품 정보가 제대로 입력되지 않았습니다.");
+                return false;
+            }
+
+        } catch (InputMismatchException e) {
+            System.out.println("숫자를 입력해 주세요.");
+            return false;
+        }
+
+        //상품 정보 추가 여부 입력받기
+        System.out.println(product.toStringDetail());
+        System.out.println("위 정보로 상품을 추가하시겠습니까?");
+        System.out.println("1. 확인    2. 취소");
+
+        int userChoice = 0;
+        try {
+            userChoice = scanner.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("숫자를 입력해 주세요.");
+        }
+
+        if (userChoice == 1) {
+            // 카테고리에 추가하기
+            if (!getCategory(inputCategory).addProduct(product)) {
+                System.out.println("동일한 상품이 존재합니다. 상품 등록이 취소되었습니다.");
+                return false;
+            }
+            System.out.println("상품 등록 성공!");
+
+        } else if (userChoice == 2) {
+            System.out.println("상품 추가를 취소합니다.");
+            return false;
+        } else {
+            System.out.println("올바르지 않은 번호를 입력했습니다.");
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean modifyProduct() {
+
+        //카테고리 선택
+        System.out.println("어느 카테고리 상품을 수정하시겠습니까?");
+        System.out.println("1. 전자제품");
+        System.out.println("2. 의류");
+        System.out.println("3. 식품");
+
+        //카테고리 번호 입력
+        int inputCategory;
+        System.out.println("카테고리 번호를 입력하세요: ");
+        try {
+            inputCategory = scanner.nextInt();
+            scanner.nextLine(); //줄바꿈 제거
+        } catch (InputMismatchException e) {
+            System.out.println("숫자를 입력해 주세요.");
+            return false;
+        }
+
+        // 상품 목록 출력
+        Category productList = getCategory(inputCategory);
+        if (productList == null) {
+            System.out.println("존재하지 않는 카테고리입니다.");
+            return false;
+        }
+
+        productList.showProductsInfo();
+
+        //수정할 상품 번호 입력
+        System.out.println("수정할 항목을 선택하세요.");
+        int inputProduct;
+        try {
+            inputProduct = scanner.nextInt();
+            scanner.nextLine(); //줄바꿈 제거
+        } catch (InputMismatchException e) {
+            System.out.println("숫자를 입력해 주세요.");
+            return false;
+        }
+
+        // 입력받은 상품 번호 검증
+        Product oldProduct = productList.getProducts(inputProduct);
+        if (oldProduct == null) {
+            System.out.println("잘못된 번호 입력입니다.");
+            return false;
+        }
+
+        System.out.println("현재 상품 정보: " + oldProduct.toStringDetail());
+
+        // 수정할 항목 선택 입력받기
+        System.out.println(" 수정할 항목을 선택해주세요:");
+        System.out.println("1. 가격\n2. 설명\n3. 재고수량");
+
+        int userEditIdx = 0;
+        try {
+
+            userEditIdx = scanner.nextInt();
+            scanner.nextLine(); //줄바꿈 제거
+
+        } catch (InputMismatchException e) {
+            System.out.println("숫자를 입력해 주세요.");
+            return false;
+        }
+
+        // 수정할 상품 정보 입력받기
+        try {
+            //가격 정보 수정
+            if (userEditIdx == 1) {
+                int oldPrice = oldProduct.getPrice();
+                System.out.println("현재 가격: "+oldPrice);
+                System.out.print("새로운 가격을 입력하세요: ");
+                int inputPrice = scanner.nextInt();
+                scanner.nextLine(); //줄바꿈 제거
+
+                //예외처리
+                if (inputPrice < 0) {
+                    System.out.println("0 미만 값으로 변경할 수 없습니다. ");
+                    return false;
+                }
+
+                // 수정하기
+                oldProduct.setPrice(inputPrice);
+                System.out.println(oldProduct.getName()+"의 가격이 "+oldPrice+"원 -> "+oldProduct.getPrice()+"으로 수정되었습니다.");
+
+            // 상품 설명 수정
+            } else if (userEditIdx == 2) {
+                String oldDesc = oldProduct.getDescription();
+                System.out.println("현재 설명: "+oldDesc);
+                System.out.print("새로운 설명을 입력하세요: ");
+                String inputDescription = scanner.nextLine();
+
+                // 예외처리
+                if (inputDescription.isEmpty()) {
+                    System.out.println("상품 정보가 제대로 입력되지 않았습니다.");
+                    return false;
+                }
+
+                //수정하기
+                oldProduct.setDescription(inputDescription);
+                System.out.println(oldProduct.getName()+"의 설명이 ["+oldDesc+" ] -> [ "+oldProduct.getDescription()+" ]으로 수정되었습니다.");
+
+                // 재고 수량 수정
+            } else if (userEditIdx == 3) {
+                int oldStock = oldProduct.getStockQuantity();
+                System.out.println("현재 재고: "+oldStock);
+                System.out.print("새로운 재고량을 입력하세요: ");
+                int inputStock = scanner.nextInt();
+                scanner.nextLine(); //줄바꿈 제거
+
+                //예외처리
+                if (inputStock < 0) {
+                    System.out.println("0 미만 값으로 변경할 수 없습니다. ");
+                    return false;
+                }
+
+                //수정하기
+                oldProduct.setStockQuantity(inputStock);
+                System.out.println(oldProduct.getName()+"의 재고가 "+oldStock+"개 -> "+oldProduct.getStockQuantity()+"으로 수정되었습니다.");
+
+            } else {
+                System.out.println("잘못된 번호 선택입니다. ");
+                return false;
+            }
+
+        } catch (InputMismatchException e) {
+            System.out.println("숫자를 입력해 주세요.");
+            return false;
+        }
+
+
+        return true;
     }
 }
 

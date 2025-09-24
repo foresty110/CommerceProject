@@ -15,8 +15,23 @@ public class Category {
         return name;
     }
 
+    public boolean addProduct(Product product){
+
+        for(Product p:products){
+            if(p.getName().equals(product.getName())){
+                return false;
+            }
+        }
+
+        this.products.add(product);
+        return true;
+    }
+
     public Product getProducts(int idx) {
-       return products.get(idx);
+        if (products.size() < idx || idx < 1) {
+            return null;
+        }
+       return products.get(idx -1);
     }
 
     public int getProductsSize() {
