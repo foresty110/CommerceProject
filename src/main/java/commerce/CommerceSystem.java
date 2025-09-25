@@ -157,19 +157,34 @@ public class CommerceSystem {
                 productInfoMessage = getCategory(inputMenu).showProductsInfoOver();
             }
 
-
             // 선택한 카테고리의 상품 데이터 출력
             productInfoMessage += "\n0. 뒤로가기 \n번호를 선택하세요: ";
             Menu categoryMenu = new Menu(MenuType.BACK, "상품 선택", productInfoMessage);
 
             // 상품 선택 입력받기
-            int pickProduct = scannerSystem.getValidatedInput(0, getCategory(inputMenu).getProductsSize());
+            int pickMax = 0 ;
+            if (pickFilter == 1) {
+                pickMax = getCategory(inputMenu).getProductsSize();
+            }else if(pickFilter == 2){
+                pickMax = getCategory(inputMenu).getProductsSize(p -> p.getPrice() <= 1_000_000);
+            }else if(pickFilter == 3){
+                pickMax = getCategory(inputMenu).getProductsSize(p -> p.getPrice() > 1_000_000);
+            }
+            int pickProduct = scannerSystem.getValidatedInput(0,pickMax);
             if (categoryMenu.isSelectCancle(pickProduct)) {
                 continue;
             }
 
             // 상품 상세 정보 출력하기
-            Product product = getCategory(inputMenu).getProduct(pickProduct);
+            Product product = null;
+            if (pickFilter == 1) {
+                product = getCategory(inputMenu).getProduct(pickProduct);
+            }else if(pickFilter == 2){
+                product = getCategory(inputMenu).getProduct(pickProduct,p -> p.getPrice() <= 1000000);
+            }else if(pickFilter == 3){
+                product = getCategory(inputMenu).getProduct(pickProduct,p -> p.getPrice() > 1000000);
+            }
+
             System.out.println("선택한 상품: " + product.toStringDetail());
 
             // 장바구니 -----------------------------------------------------------------------------

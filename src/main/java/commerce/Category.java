@@ -2,6 +2,7 @@ package commerce;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Category {
@@ -38,15 +39,38 @@ public class Category {
 
     }
 
+    public Product getProduct(int idx, Predicate<Product> condition) {
+        if (products.size() < idx || idx < 1) {
+            return null;
+        }
+
+        //필터걸기
+        List<Product> filtered = products.stream()
+                .filter(condition)
+                .toList();
+
+        return filtered.get(idx - 1);
+    }
+
     public Product getProduct(int idx) {
         if (products.size() < idx || idx < 1) {
             return null;
         }
+
         return products.get(idx - 1);
     }
 
     public int getProductsSize() {
         return products.size();
+    }
+
+    public int getProductsSize(Predicate<Product> condition) {
+        //필터걸기
+        List<Product> filtered = products.stream()
+                .filter(condition)
+                .toList();
+
+        return filtered.size();
     }
 
     public String showProductsInfo() {
