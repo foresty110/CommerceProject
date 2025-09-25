@@ -52,14 +52,8 @@ public class Cart {
         }
     }
 
-    public int getTotalPrice() {
-
-        int sum = 0;
-        for (CartItem item : items) {
-            int price = item.getProduct().getPrice();
-            sum += price * item.getQuantity();
-        }
-        return sum;
+    public List<CartItem> getCartItems() {
+        return items;
     }
 
     public void purchase() {

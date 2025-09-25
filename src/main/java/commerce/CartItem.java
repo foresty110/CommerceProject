@@ -21,6 +21,6 @@ public class CartItem {
     }
 
    public String toString(){
-        return product.toString() + " 수량:" + quantity;
+        return product.toString() + " | 수량:" + quantity;
     }
 }

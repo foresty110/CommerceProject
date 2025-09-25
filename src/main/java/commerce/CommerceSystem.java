@@ -10,6 +10,7 @@ public class CommerceSystem {
     private List<Category> categories = new ArrayList<>();
     private Cart cart = new Cart();
     private ScannerSystem scannerSystem = new ScannerSystem();
+    private Customer customer;
 
     private final String PASSWORD = "admin123";
 
@@ -33,6 +34,20 @@ public class CommerceSystem {
             result += ++count + "." + category.getName() + "\n";
         }
         return result;
+    }
+
+    public int getTotalPrice() {
+
+        int sum = 0;
+        for (CartItem item : cart.getCartItems()) {
+            int price = item.getProduct().getPrice();
+            sum += price * item.getQuantity();
+        }
+
+        //고객 등급에 맞는 할인율 적용
+        double discountRate = (100 - customer.getCustomerGrade().getValue()) / 100.0;
+        sum *= discountRate;
+        return sum;
     }
 
     public void start() {
@@ -72,6 +87,8 @@ public class CommerceSystem {
         this.addCategory(clothing);
         this.addCategory(food);
 
+        customer = new Customer("김자바", "java123@gamil.com", CustomerGrade.PLATINUM);
+
         //---------------------------------------------------------------------------------------------------
 
         // 사용자로부터 입력받기
@@ -90,17 +107,23 @@ public class CommerceSystem {
             Menu menu = new Menu(MenuType.EXIT, "커머스 플랫폼 메인", categoryInfoMessage);
 
             // 메뉴 번호 입력 받기
-            int inputMenu = scannerSystem.getValidatedInput(0, 6);
+            int[] validNumbers;
+            if (cart.getCartItemAmount() > 0) {
+                validNumbers = new int[]{0, 1, 2, 3, 4, 5, 6};
+            } else {
+                validNumbers = new int[]{0, 1, 2, 3, 6};
+            }
+            int inputMenu = scannerSystem.getValidatedInput(validNumbers);
 
             //프로그램 종료
             if (menu.isSelectCancle(inputMenu)) {
-               return;
+                return;
             }
 
-            if (inputMenu == 4 && cart.getCartItemAmount() > 0) {
+            if (inputMenu == 4) {
                 order();
                 continue;
-            } else if (inputMenu == 5 && cart.getCartItemAmount() > 0) {
+            } else if (inputMenu == 5) {
 
             } else if (inputMenu == 6) {
                 //  관리자 모드
@@ -155,19 +178,22 @@ public class CommerceSystem {
         cart.showCartItems();
 
         //총 주문 금액
-        String infoTotal = cart.getTotalPrice() + "원 \n1. 주문 확정 2. 취소";
-        Menu menu = new Menu(MenuType.CANCEL_OR_CONFIRM, "총 주문 금액", infoTotal);
+        String infoTotal = "고객님의 등급은 " + customer.getCustomerGrade().toString() +
+                " 으로 할인이 " + customer.getCustomerGrade().getValue() + "% 적용되었습니다." +
+                "\n총 금액은" + getTotalPrice() + "원 입니다." +
+                "\n1. 주문 확정 2. 취소";
+        Menu menu = new Menu(MenuType.CANCEL_OR_CONFIRM, "주문 확정", infoTotal);
 
+        // 주문 확정 여부 입력 받기
         int input = scannerSystem.getValidatedInput(1, 2);
 
+        // 주문 취소 처리
         if (menu.isSelectCancle(input)) {
             return;
         }
 
-        if (input == 1) {
-            System.out.println("주문이 완료되었습니다 !총 금액: " + cart.getTotalPrice() + "원");
-            cart.purchase();
-        }
+        System.out.println("주문이 완료되었습니다 !총 금액: " + getTotalPrice() + "원");
+        cart.purchase();
 
     }
 
@@ -401,7 +427,7 @@ public class CommerceSystem {
         if (!getCategory(inputCategory).deleteProduct(inputProduct)) {
             System.out.println("상품 제거 실패");
             return false;
-        }else{
+        } else {
             System.out.println("상품 제거 성공");
         }
 
