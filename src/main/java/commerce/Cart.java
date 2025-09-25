@@ -21,6 +21,17 @@ public class Cart {
         items.add(newItem);
         newItem.addQuantity();
     }
+    public boolean removeItem(String findItem) {
+
+        //장바구니에 없는 상품이라면
+        for (CartItem i : items) {
+            if (i.getProduct().getName().equals(findItem)) {
+                items.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean canAddToCart(Product product) {
 

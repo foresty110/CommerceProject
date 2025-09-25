@@ -27,7 +27,7 @@ public class Category {
         return true;
     }
 
-    public Product getProducts(int idx) {
+    public Product getProduct(int idx) {
         if (products.size() < idx || idx < 1) {
             return null;
         }
@@ -48,5 +48,12 @@ public class Category {
         return info;
     }
 
+    public boolean deleteProduct(int idx) {
+        if (products.size() < idx || idx < 1) {
+            return false;
+        }
+        products.remove(idx-1);
+        return true;
+    }
 
 }
