@@ -124,18 +124,43 @@ public class CommerceSystem {
                 order();
                 continue;
             } else if (inputMenu == 5) {
-
+                orderCancle();
+                continue;
             } else if (inputMenu == 6) {
                 //  관리자 모드
                 management();
                 continue;
             }
 
+
+            // 카테고리 필터링 -----------------------------------------------------------------------------
+
+            String menuName = getCategory(inputMenu).getName()+"카테고리 선택";
+            String categoryFilterMessage = "1.전체 상품 보기" +
+                "\n2.가격대별 필터링(100만원 이하)" +
+                "\n3.가격대별 필터링(100만원 초과)"+
+                "\n0. 뒤로가기" +
+                "\n번호를 선택하세요: ";
+            Menu categoryFilterMenu = new Menu(MenuType.BACK,menuName, categoryFilterMessage);
+
+            // 상품 선택 입력받기
+            int pickFilter = scannerSystem.getValidatedInput(0,3);
+            String productInfoMessage="";
+            if(categoryFilterMenu.isSelectCancle(pickFilter))
+                continue;
+
+            if (pickFilter == 1) {
+                productInfoMessage = getCategory(inputMenu).showProductsInfo();
+            }else if(pickFilter == 2){
+                productInfoMessage = getCategory(inputMenu).showProductsInfoUnder();
+            }else if(pickFilter == 3){
+                productInfoMessage = getCategory(inputMenu).showProductsInfoOver();
+            }
+
+
             // 선택한 카테고리의 상품 데이터 출력
-            String productInfoMessage = getCategory(inputMenu).showProductsInfo() +
-                    "0. 뒤로가기" +
-                    "\n번호를 선택하세요: ";
-            Menu categoryMenu = new Menu(MenuType.BACK, "카테고리 선택", productInfoMessage);
+            productInfoMessage += "\n0. 뒤로가기 \n번호를 선택하세요: ";
+            Menu categoryMenu = new Menu(MenuType.BACK, "상품 선택", productInfoMessage);
 
             // 상품 선택 입력받기
             int pickProduct = scannerSystem.getValidatedInput(0, getCategory(inputMenu).getProductsSize());
@@ -175,7 +200,7 @@ public class CommerceSystem {
     public void order() {
 
         //  장바구니 목록 출력
-        cart.showCartItems();
+        System.out.println(cart.showCartItems());
 
         //총 주문 금액
         String infoTotal = "고객님의 등급은 " + customer.getCustomerGrade().toString() +
@@ -195,6 +220,23 @@ public class CommerceSystem {
         System.out.println("주문이 완료되었습니다 !총 금액: " + getTotalPrice() + "원");
         cart.purchase();
 
+    }
+
+    public boolean orderCancle(){
+
+        String infoMessage = cart.showCartItems() + "진행 중인 주문을 취소하시겠습니까?\n1.주문 취소\t 2.돌아가기";
+        Menu menuOrdreCancle = new Menu(MenuType.CANCEL_OR_CONFIRM,"주문 취소",infoMessage);
+
+        int inputCancle = scannerSystem.getValidatedInput(1, 2);
+
+        //주문 취소하지 않기로 결정
+        if (menuOrdreCancle.isSelectCancle(inputCancle)) {
+            return false;
+        }
+
+        cart.clearCart();
+        System.out.println("주문 취소 성공. 장바구니에 담긴 상품이 모두 삭제되었습니다.");
+        return true;
     }
 
     public boolean management() {

@@ -21,16 +21,21 @@ public class Cart {
         items.add(newItem);
         newItem.addQuantity();
     }
+
     public boolean removeItem(String findItem) {
 
-        //장바구니에 없는 상품이라면
-        for (CartItem i : items) {
-            if (i.getProduct().getName().equals(findItem)) {
-                items.remove(i);
-                return true;
-            }
+        CartItem matchItem = items.stream()
+                .filter(item -> item.getProduct().getName().equals(findItem))
+                .findFirst()
+                .orElse(null);
+
+        if (matchItem == null) {
+            return false;
+        }else{
+            items.remove(matchItem);
+            return true;
         }
-        return false;
+
     }
 
     public boolean canAddToCart(Product product) {
@@ -45,11 +50,13 @@ public class Cart {
         return items.size();
     }
 
-    public void showCartItems() {
+    public String showCartItems() {
 
+        String result = "";
         for (CartItem item : items) {
-            System.out.println(item.toString());
+            result+= item.toString() +"\n";
         }
+        return result;
     }
 
     public List<CartItem> getCartItems() {
@@ -69,6 +76,9 @@ public class Cart {
             System.out.println(item.getProduct().getName() + " 재고가" + beforeQuantity + "개 ->" + afterQuantity + "개로 업데이트 되었습니다.");
         }
         // 장바구니 비우기
+       clearCart();
+    }
+    public void clearCart() {
         items.clear();
     }
 }
