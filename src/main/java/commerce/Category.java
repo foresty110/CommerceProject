@@ -60,14 +60,31 @@ public class Category {
         return products.get(idx - 1);
     }
 
+    public Product getProduct(String name){
+
+        Product matchItem = products.stream()
+                .filter(product -> product.getName().equals(name))
+                .findFirst()
+                .orElse(null);
+
+        return matchItem;
+    }
     public int getProductsSize() {
         return products.size();
     }
 
-    public int getProductsSize(Predicate<Product> condition) {
+    public int getProductsSizeUnder(){
+        List<Product> filtered = products.stream()
+                .filter(product -> product.getPrice() <= 1000000)
+                .toList();
+
+        return filtered.size();
+    }
+    public int getProductsSizeOver() {
+
         //필터걸기
         List<Product> filtered = products.stream()
-                .filter(condition)
+                .filter(product -> product.getPrice() > 1000000)
                 .toList();
 
         return filtered.size();

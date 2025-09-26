@@ -10,9 +10,11 @@ public class CommerceSystem {
     private List<Category> categories = new ArrayList<>();
     private Cart cart = new Cart();
     private ScannerSystem scannerSystem = new ScannerSystem();
-    private Customer customer;
-
+    private Customer customer = new Customer("김자바", "java123@gamil.com", CustomerGrade.PLATINUM);
     private final String PASSWORD = "admin123";
+    private List<Menu> menuList = new ArrayList<>();
+
+    private int curCategory;
 
     public void addCategory(Category category) {
         categories.add(category);
@@ -23,7 +25,6 @@ public class CommerceSystem {
         if (categories.size() < idx || idx < 1) {
             return null;
         }
-
         return categories.get(idx - 1);
     }
 
@@ -50,8 +51,7 @@ public class CommerceSystem {
         return sum;
     }
 
-    public void start() {
-
+    public void createData() {
         // 전자제품 데이터 저장
         List<Product> electronicProducts = new ArrayList<>();
 
@@ -87,129 +87,279 @@ public class CommerceSystem {
         this.addCategory(clothing);
         this.addCategory(food);
 
-        customer = new Customer("김자바", "java123@gamil.com", CustomerGrade.PLATINUM);
+    }
 
-        //---------------------------------------------------------------------------------------------------
+    public void menuCreate() {
 
-        // 사용자로부터 입력받기
-        while (true) {
+        Menu menu = new Menu(MenuType.MAIN, MenuActionType.EXIT);
+        addMenu(menu);
 
-            // 카테고리 목록 출력
-            String categoryInfoMessage = "";
+        //-------------------------------------------------------------------------------
 
-            categoryInfoMessage += toStringCategories();
-            if (cart.getCartItemAmount() > 0) {
-                categoryInfoMessage += "4. 장바구니 확인\t| 장바구니를 확인 후 주문합니다.";
-                categoryInfoMessage += "\n5. 주문 취소\t| 진행중인 주문을 취소합니다.";
-            }
-            categoryInfoMessage += "\n6. 관리자 모드\n0. 프로그램 종료\n번호를 선택하세요: ";
+        menu = new Menu(MenuType.SHOW_PRODUCT, MenuActionType.SELECT);
+        addMenu(menu);
 
-            Menu menu = new Menu(MenuType.EXIT, "커머스 플랫폼 메인", categoryInfoMessage);
+        //-------------------------------------------------------------------------------
 
-            // 메뉴 번호 입력 받기
-            int[] validNumbers;
-            if (cart.getCartItemAmount() > 0) {
-                validNumbers = new int[]{0, 1, 2, 3, 4, 5, 6};
-            } else {
-                validNumbers = new int[]{0, 1, 2, 3, 6};
-            }
-            int inputMenu = scannerSystem.getValidatedInput(validNumbers);
-
-            //프로그램 종료
-            if (menu.isSelectCancle(inputMenu)) {
-                return;
-            }
-
-            if (inputMenu == 4) {
-                order();
-                continue;
-            } else if (inputMenu == 5) {
-                orderCancle();
-                continue;
-            } else if (inputMenu == 6) {
-                //  관리자 모드
-                management();
-                continue;
-            }
-
-
-            // 카테고리 필터링 -----------------------------------------------------------------------------
-
-            String menuName = getCategory(inputMenu).getName()+"카테고리 선택";
-            String categoryFilterMessage = "1.전체 상품 보기" +
+        menu = new Menu(MenuType.SHOW_FILTER, MenuActionType.SELECT);
+        String categoryFilterMessage = "1.전체 상품 보기" +
                 "\n2.가격대별 필터링(100만원 이하)" +
-                "\n3.가격대별 필터링(100만원 초과)"+
+                "\n3.가격대별 필터링(100만원 초과)" +
                 "\n0. 뒤로가기" +
                 "\n번호를 선택하세요: ";
-            Menu categoryFilterMenu = new Menu(MenuType.BACK,menuName, categoryFilterMessage);
+        addMenu(menu);
+        menu.setInfoMessage(categoryFilterMessage);
+        menu.setInputRange(0, 3);
 
-            // 상품 선택 입력받기
-            int pickFilter = scannerSystem.getValidatedInput(0,3);
-            String productInfoMessage="";
-            if(categoryFilterMenu.isSelectCancle(pickFilter))
-                continue;
+        //-------------------------------------------------------------------------------
 
-            if (pickFilter == 1) {
-                productInfoMessage = getCategory(inputMenu).showProductsInfo();
-            }else if(pickFilter == 2){
-                productInfoMessage = getCategory(inputMenu).showProductsInfoUnder();
-            }else if(pickFilter == 3){
-                productInfoMessage = getCategory(inputMenu).showProductsInfoOver();
-            }
+        menu = new Menu(MenuType.ADDCART_CONFIM, MenuActionType.CANCEL_OR_CONFIRM);
+        menu.setInputRange(1, 2);
+        addMenu(menu);
 
-            // 선택한 카테고리의 상품 데이터 출력
-            productInfoMessage += "\n0. 뒤로가기 \n번호를 선택하세요: ";
-            Menu categoryMenu = new Menu(MenuType.BACK, "상품 선택", productInfoMessage);
+        //-------------------------------------------------------------------------------
 
-            // 상품 선택 입력받기
-            int pickMax = 0 ;
-            if (pickFilter == 1) {
-                pickMax = getCategory(inputMenu).getProductsSize();
-            }else if(pickFilter == 2){
-                pickMax = getCategory(inputMenu).getProductsSize(p -> p.getPrice() <= 1_000_000);
-            }else if(pickFilter == 3){
-                pickMax = getCategory(inputMenu).getProductsSize(p -> p.getPrice() > 1_000_000);
-            }
-            int pickProduct = scannerSystem.getValidatedInput(0,pickMax);
-            if (categoryMenu.isSelectCancle(pickProduct)) {
-                continue;
-            }
+        menu = new Menu(MenuType.CATEGORY_DELETE, MenuActionType.CANCEL_OR_CONFIRM);
+        menu.setInfoMessage("제거하시겠습니까?\n1.확인 2.취소");
+        addMenu(menu);
 
-            // 상품 상세 정보 출력하기
-            Product product = null;
-            if (pickFilter == 1) {
-                product = getCategory(inputMenu).getProduct(pickProduct);
-            }else if(pickFilter == 2){
-                product = getCategory(inputMenu).getProduct(pickProduct,p -> p.getPrice() <= 1000000);
-            }else if(pickFilter == 3){
-                product = getCategory(inputMenu).getProduct(pickProduct,p -> p.getPrice() > 1000000);
-            }
+        //-------------------------------------------------------------------------------
 
-            System.out.println("선택한 상품: " + product.toStringDetail());
+        menu = new Menu(MenuType.CANCLE_ORDER, MenuActionType.CANCEL_OR_CONFIRM);
+        menu.setInputRange(1, 2);
+        addMenu(menu);
 
-            // 장바구니 -----------------------------------------------------------------------------
-            String insertCart = "위 상품을 장바구니에 추가하시겠습니까?\n1.확인 \t 2.취소";
-            Menu cartMenu = new Menu(MenuType.CANCEL_OR_CONFIRM, "장바구니 추가", insertCart);
+        //-----------------------------
+        menu = new Menu(MenuType.CONFIRM_ORDER, MenuActionType.CANCEL_OR_CONFIRM);
+        menu.setInputRange(1, 2);
+        addMenu(menu);
 
-            //장바구니 사용 입력 받기
-            int inputCartItem = scannerSystem.getValidatedInput(1, 2);
+        //---------------------------------------------------
+        //메뉴 추가 - 관리자 모드
+        menu = new Menu(MenuType.MANAGEMENT_MAIN, MenuActionType.SELECT);
+        menu.setInfoMessage( "1. 상품 추가" +
+                        "\n2. 상품 수정" +
+                        "\n3. 상품 삭제" +
+                        "\n0. 메인으로 돌아가기" +
+                        "\n관리자 모드 번호를 입력하세요: "
+        );
+        menu.setInputRange(0, 3);
+        addMenu(menu);
 
-            if (cartMenu.isSelectCancle(inputCartItem)) {
-                continue;
-            }
+        //------------------------------------------------------
 
-            //재고 관리 & 장바구니 추가
-            if (!cart.canAddToCart(product)) {
-                System.out.println("재고가 없습니다.");
-                continue;
-            }
+        // 관리자 모드 - 카테고리 상품 추가
 
-            cart.addItem(new CartItem(product));
-            System.out.println(product.getName() + "가 장바구니에 추가되었습니다.");
+        menu = new Menu(MenuType.MANAGEMENT_ADD_CATEGORY, MenuActionType.SELECT);
+        menu.setInfoMessage("어느 카테고리에 상품을 추가하시겠습니까?" +
+                "\n1. 전자제품" +
+                "\n2. 의류" +
+                "\n3. 식품" +
+                "\n카테고리 번호를 입력하세요: ");
+        menu.setInputRange(1, 3);
+        addMenu(menu);
 
 
+        // --------------------------
+
+        // 관리자 모드 - 상품 추가 상세 정보 입력받기
+        menu = new Menu(MenuType.MANAGEMENT_ADD_CONFIRM, MenuActionType.CANCEL_OR_CONFIRM);
+        menu.setInputRange(1, 2);
+        addMenu(menu);
+
+        //-------------------------------------
+        // 카테고리 선택 메뉴 생성
+        menu = new Menu(MenuType.MANAGEMENT_DELETE, MenuActionType.SELECT);
+        menu.setInfoMessage("카테고리를선택하세요\n" + toStringCategories() + "번호를 입력하세요: ");
+        addMenu(menu);
+
+        // --------------------------------------
+        menu = new Menu(MenuType.MANAGEMENT_DELETE_SELECT_PRODUCT, MenuActionType.SELECT);
+        addMenu(menu);
+
+        //---------------------------------------
+        // 관리자 모드의 제거 확인 메뉴 생성
+        menu = new Menu(MenuType.MANAGEMENT_DELETE_CONFIM, MenuActionType.CANCEL_OR_CONFIRM);
+        String messageDelete = "제거하시겠습니까?\n1.확인 2.취소";
+        menu.setInfoMessage(messageDelete);
+        menu.setInputRange(1, 2);
+        addMenu(menu);
+
+        //----------------------------------------
+        // 메뉴 추가 - 관리자 모드/ 수정할 카테고리 선택
+        menu = new Menu(MenuType.MANAGEMENT_MODIFY_CATEGORY, MenuActionType.SELECT);
+        menu.setInfoMessage("어느 카테고리 상품을 수정하시겠습니까?" +
+                "\n1. 전자제품" +
+                "\n2. 의류" +
+                "\n3. 식품" +
+                "\n카테고리 번호를 입력하세요: ");
+        menu.setInputRange(1, 3);
+        addMenu(menu);
+
+        // 메뉴 추가 - 관리자모드/ 수정할 상품 입력
+        menu = new Menu(MenuType.MANAGEMENT_MODIFY_PRODUCT, MenuActionType.INPUT);
+        addMenu(menu);
+
+        //메뉴 추가 - 관리자모드/ 수정할 상품의 항목 선택
+        menu = new Menu(MenuType.MANAGEMENT_MODIFY_INFO, MenuActionType.SELECT);
+        menu.setInputRange(1,3);
+        addMenu(menu);
+
+    }
+
+    public void start() {
+
+        // 상품 데이터 저장
+        createData();
+
+        //메뉴 생성
+        menuCreate();
+
+        while (true) {
+            //메인 메뉴 선택 단계
+            if (!mainMenu())
+                break;
         }
 
+    }
+
+    public boolean mainMenu() {
+
+        while (true) {
+            //메인 메뉴 정보 출력
+            Menu menu = getMenu(MenuType.MAIN);
+
+            String infoMessage = "1. 전자제품\n2. 의류\n3. 식품";
+            if (cart.getCartItemAmount() > 0) {
+                infoMessage += "\n4. 장바구니 확인\t| 장바구니를 확인 후 주문합니다." +
+                        "\n5. 주문 취소\t| 진행중인 주문을 취소합니다.";
+            }
+            infoMessage += "\n6. 관리자 모드\n0. 프로그램 종료\n번호를 선택하세요: ";
+
+            menu.setInfoMessage(infoMessage);
+            menu.setCondition(cart.getCartItemAmount() > 0);
+
+            if (!menu.menuProgress())
+                return false;
+
+            curCategory = menu.getUserInput();
+
+            if (curCategory == 1 || curCategory == 2 || curCategory == 3) {
+
+                while (true) {
+                    //카테고리 필터 선택 단계
+                    if (!showFilter())
+                        break;
+                    //상품 선택 단계
+                    if (!showProduct())
+                        continue;
+                    //장바구니 추가 여부 선택
+                    if (!selectAddCartStep())
+                        continue;
+                }
+            }
+            if (curCategory == 4) {
+                order();
+            } else if (curCategory == 5) {
+                if (!orderCancle())
+                    continue;
+            } else if (curCategory == 6) {//  관리자 모드
+                if (!accessPassword())
+                    continue;
+                manageMain();
+            }
+
+            break;
+        }
+        return true;
+    }
+
+    public boolean showFilter() {
+        Menu menu = getMenu(MenuType.SHOW_FILTER);
+        if (!menu.menuProgress())
+            return false;
+
+        return true;
+    }
+
+    public boolean showProduct() {
+
+        int filter = getMenu(MenuType.SHOW_FILTER).getUserInput();
+
+        Menu menu = getMenu(MenuType.SHOW_PRODUCT);
+        menu.setName(getCategory(curCategory).getName() + "카테고리 선택");
+
+        int pickMax = 0;
+        String productInfoMessage = "";
+        if (filter == 1) {
+            productInfoMessage = getCategory(curCategory).showProductsInfo();
+            pickMax = getCategory(curCategory).getProductsSize();
+        } else if (filter == 2) {
+            productInfoMessage = getCategory(curCategory).showProductsInfoUnder();
+            pickMax = getCategory(curCategory).getProductsSizeUnder();
+        } else if (filter == 3) {
+            productInfoMessage = getCategory(curCategory).showProductsInfoOver();
+            pickMax = getCategory(curCategory).getProductsSizeOver();
+        }
+        productInfoMessage += "\n0. 뒤로가기 \n번호를 선택하세요: ";
+        menu.setInfoMessage(productInfoMessage);
+        menu.setInputRange(0, pickMax);
+
+        if (!menu.menuProgress())
+            return false;
+
+        return true;
+    }
+
+    public boolean selectAddCartStep() {
+
+        int filter = getMenu(MenuType.SHOW_FILTER).getUserInput();
+        int userInput = getMenu(MenuType.SHOW_PRODUCT).getUserInput();
+        Category category = getCategory(curCategory);
+
+        // 상품 상세 정보 출력하기
+        Product product = null;
+        if (filter == 1) {
+            product = category.getProduct(userInput);
+        } else if (filter == 2) {
+            product = category.getProduct(userInput, p -> p.getPrice() <= 1000000);
+        } else if (filter == 3) {
+            product = category.getProduct(userInput, p -> p.getPrice() > 1000000);
+        }
+
+        String message = "선택한 상품: " +
+                product.toStringDetail() +
+                "\n위 상품을 장바구니에 추가하시겠습니까?" +
+                "\n1.확인 \t 2.취소";
+
+        Menu menu = getMenu(MenuType.ADDCART_CONFIM);
+        menu.setInfoMessage(message);
+        if (!menu.menuProgress())
+            return false;
+
+        //재고 관리 & 장바구니 추가
+        if (!cart.canAddToCart(product)) {
+            System.out.println("재고가 없습니다.");
+            return false;
+        }
+
+        cart.addItem(new CartItem(product));
+        System.out.println(product.getName() + "가 장바구니에 추가되었습니다.");
+
+        return true;
+    }
+
+    public Menu getMenu(MenuType menuType) {
+        for (Menu menu : menuList) {
+            if (menu.getMenuType() == menuType) {
+                return menu;
+            }
+        }
+        return null;
+    }
+
+    public void addMenu(Menu menu) {
+        this.menuList.add(menu);
     }
 
     public void order() {
@@ -222,13 +372,11 @@ public class CommerceSystem {
                 " 으로 할인이 " + customer.getCustomerGrade().getValue() + "% 적용되었습니다." +
                 "\n총 금액은" + getTotalPrice() + "원 입니다." +
                 "\n1. 주문 확정 2. 취소";
-        Menu menu = new Menu(MenuType.CANCEL_OR_CONFIRM, "주문 확정", infoTotal);
-
-        // 주문 확정 여부 입력 받기
-        int input = scannerSystem.getValidatedInput(1, 2);
+        Menu menu = getMenu(MenuType.CONFIRM_ORDER);
+        menu.setInfoMessage(infoTotal);
 
         // 주문 취소 처리
-        if (menu.isSelectCancle(input)) {
+        if (!menu.menuProgress()) {// 주문 확정 여부 입력 받기
             return;
         }
 
@@ -237,24 +385,24 @@ public class CommerceSystem {
 
     }
 
-    public boolean orderCancle(){
+    public boolean orderCancle() {
 
-        String infoMessage = cart.showCartItems() + "진행 중인 주문을 취소하시겠습니까?\n1.주문 취소\t 2.돌아가기";
-        Menu menuOrdreCancle = new Menu(MenuType.CANCEL_OR_CONFIRM,"주문 취소",infoMessage);
+        Menu menu = getMenu(MenuType.CANCLE_ORDER);
 
-        int inputCancle = scannerSystem.getValidatedInput(1, 2);
+        String message = cart.showCartItems() +
+                "\n진행 중인 주문을 취소하시겠습니까?" +
+                "\n1.주문 취소 2.돌아가기";
+        menu.setInfoMessage(message);
 
-        //주문 취소하지 않기로 결정
-        if (menuOrdreCancle.isSelectCancle(inputCancle)) {
+        if (!menu.menuProgress())
             return false;
-        }
 
         cart.clearCart();
         System.out.println("주문 취소 성공. 장바구니에 담긴 상품이 모두 삭제되었습니다.");
         return true;
     }
 
-    public boolean management() {
+    public boolean accessPassword() {
 
         //비밀번호 인증
         int accessCount = 3;
@@ -276,126 +424,160 @@ public class CommerceSystem {
             }
         }
 
-        //관리자 모드 선택
-
-        System.out.println("[ 관리자 모드 ]");
-        System.out.println("1. 상품 추가" +
-                "\n2. 상품 수정" +
-                "\n3. 상품 삭제" +
-                "\n4. 전체 상품 현황" +
-                "\n0. 메인으로 돌아가기");
-
-        //관리자 모드 번호 입력
-        System.out.println("관리자 모드 번호를 입력하세요: ");
-        int userManageMenu = scannerSystem.getValidatedInput(0, 4);
-
-        // 관리자 모드 메뉴 실행
-
-        switch (userManageMenu) {
-            case 1:
-                //상품 추가
-                if (!addProduct())
-                    return false;
-                break;
-            case 2:
-                modifyProduct();
-                break;
-            case 3:
-                deleteProduct();
-                break;
-            default:
-                System.out.println("잘못된 메뉴 입력입니다.");
-                return false;
-        }
-
-
         return true;
     }
 
-    public boolean addProduct() {
-        //카테고리 선택
-        System.out.println("어느 카테고리에 상품을 추가하시겠습니까?");
-        System.out.println("1. 전자제품");
-        System.out.println("2. 의류");
-        System.out.println("3. 식품");
+    public boolean manageMain() {
 
-        //카테고리 번호 입력
+        while (true) {
 
-        System.out.println("카테고리 번호를 입력하세요: ");
-        int inputCategory = scannerSystem.getValidatedInput(1, categories.size());
+            //관리자 모드 선택
+            Menu menu = getMenu(MenuType.MANAGEMENT_MAIN);
+            if (!menu.menuProgress())
+                return false;
 
-        System.out.println("/" + inputCategory + "/");
-        String categoryName = getCategory(inputCategory).getName();
-        System.out.println("[ " + categoryName + " 카테고리에 상품 추가 ]");
+            curCategory = menu.getUserInput();
 
+            // 관리자 모드 메뉴 실행
+            switch (curCategory) {
+                case 1:
+                    //상품 추가
+                    if (!manageAddProduct())
+                        continue;
+                    //상품 추가 확인
+                    if (!confirmAddProduct())
+                        continue;
+                    break;
+
+                //관리자 모드 - 상품 수정
+                case 2:
+                    if (!manageModifyCategory())
+                        continue;
+                    if (!manageModifyProduct())
+                        continue;
+                    if (!manageModifyInfo())
+                        continue;
+
+                    break;
+
+                //관리자 모드 - 상품 삭제
+                case 3:
+                    if (!manageDeleteCategory())
+                        continue;
+                    if (!manageDeleteProduct())
+                        break;
+                    if (!manageDeleteConfirm())
+                        continue;
+                    break;
+            }
+
+
+        }
+    }
+
+    public boolean manageAddProduct() {
+
+        Menu menu = getMenu(MenuType.MANAGEMENT_ADD_CATEGORY);
+
+        if (!menu.menuProgress()) {
+            return false;
+        }
+
+        curCategory = menu.getUserInput();
+        return true;
+    }
+
+    public boolean confirmAddProduct() {
         // 상품 정보 입력받기
 
         System.out.print("이름을 입력하세요: ");
         String inputName = scannerSystem.getValidatedInput();
 
         System.out.println("가격을 입력하세요: ");
-        int inputPrice = scanner.nextInt();
+        int inputPrice = scannerSystem.getValidatedInput(0, Integer.MAX_VALUE);
 
         System.out.println("상품 설명을 입력하세요: ");
         String inputDescription = scannerSystem.getValidatedInput();
 
         System.out.print("재고 수량을 입력하세요: ");
-        int inputStock = scanner.nextInt();
+        int inputStock = scannerSystem.getValidatedInput(0, Integer.MAX_VALUE);
 
         Product product = new Product(inputName, inputPrice, inputDescription, inputStock);
 
-        //상품 정보 추가 여부 입력받기
+        Menu menu = getMenu(MenuType.MANAGEMENT_ADD_CONFIRM);
         String infoAddProduct = product.toStringDetail() + "\n" + "위 정보로 상품을 추가하시겠습니까?\n1.확인\t2.취소";
-        Menu menu = new Menu(MenuType.CANCEL_OR_CONFIRM, "상품 추가", infoAddProduct);
+        menu.setInfoMessage(infoAddProduct);
 
-        int userChoice = scannerSystem.getValidatedInput(1, 2);
-        if (menu.isSelectCancle(userChoice)) {
+        if (!menu.menuProgress())
+            return false;
+
+        // 카테고리에 추가하기
+        if (!getCategory(curCategory).addProduct(product)) {
+            System.out.println("동일한 상품이 존재합니다. 상품 등록이 취소되었습니다.");
+            return false;
+        }
+        System.out.println("상품 등록 성공!");
+        return true;
+
+
+    }
+
+    public boolean manageModifyCategory() {
+
+        Menu menu = getMenu(MenuType.MANAGEMENT_MODIFY_CATEGORY);
+        menu.setInputRange(1, categories.size());
+
+        if (!menu.menuProgress()) {
             return false;
         }
 
-        if (userChoice == 1) {
-            // 카테고리에 추가하기
-            if (!getCategory(inputCategory).addProduct(product)) {
-                System.out.println("동일한 상품이 존재합니다. 상품 등록이 취소되었습니다.");
-                return false;
-            }
-            System.out.println("상품 등록 성공!");
+        curCategory = menu.getUserInput();
+        return true;
+    }
+
+    public boolean manageModifyProduct() {
+
+        // 메뉴 설정
+        Menu menu = getMenu(MenuType.MANAGEMENT_MODIFY_PRODUCT);
+        Category category = getCategory(curCategory);
+        menu.setInfoMessage(category.showProductsInfo()+"수정할 상품명을 입력해주세요: ");
+
+        // 메뉴 실행
+        if(!menu.menuProgress()){
+            return false;
+        }
+
+        //존재하지 않는 상품명을 입력했다면
+        if(category.getProduct(menu.getUserInputStr() )== null)
+        {
+            System.out.println("잘못된 상품명 입력입니다.");
+            return false;
         }
 
         return true;
     }
 
-    public boolean modifyProduct() {
+    public boolean manageModifyInfo() {
 
-        //카테고리 선택
-        System.out.println("어느 카테고리 상품을 수정하시겠습니까?");
-        System.out.println("1. 전자제품");
-        System.out.println("2. 의류");
-        System.out.println("3. 식품");
+        Menu menu = getMenu(MenuType.MANAGEMENT_MODIFY_INFO);
+        String pickProduct = getMenu(MenuType.MANAGEMENT_MODIFY_PRODUCT).getUserInputStr();
 
-        // 카테고리 번호 입력
-        System.out.println("카테고리 번호를 입력하세요: ");
-        int pickCategory = scannerSystem.getValidatedInput(1, categories.size());
+        //메뉴 출력 내용 설정
+        Category productList = getCategory(curCategory);
+        Product oldProduct = productList.getProduct(pickProduct);
+        menu.setInfoMessage("현재 상품 정보: " +
+                oldProduct.toStringDetail()+
+                "\n1. 가격"+
+                "\n2. 설명"+
+                "\n3. 재고수량"+
+                "\n수정할 항목을 선택해주세요:");
 
-        // 상품 목록 출력
-        Category productList = getCategory(pickCategory);
-        System.out.println(productList.showProductsInfo());
-
-        //수정할 상품 번호 입력
-        System.out.println("수정할 항목을 선택하세요.");
-        int inputProduct = scannerSystem.getValidatedInput(1, productList.getProductsSize());
-
-        // 수정할 항목 선택 입력받기
-        Product oldProduct = productList.getProduct(inputProduct);
-        System.out.println("현재 상품 정보: " + oldProduct.toStringDetail());
-        System.out.println(" 수정할 항목을 선택해주세요:");
-        System.out.println("1. 가격\n2. 설명\n3. 재고수량");
-
-        // 수정할 상품 정보 입력받기
-        int userEditIdx = scannerSystem.getValidatedInput(1, 3);
+        // 메뉴 실행
+        if(! menu.menuProgress())
+            return false;
 
         //가격 정보 수정
-        if (userEditIdx == 1) {
+        if (menu.getUserInput() == 1) {
 
             //변경 전 가격
             int oldPrice = oldProduct.getPrice();
@@ -409,8 +591,9 @@ public class CommerceSystem {
             oldProduct.setPrice(inputPrice);
             System.out.println(oldProduct.getName() + "의 가격이 " + oldPrice + "원 -> " + oldProduct.getPrice() + "으로 수정되었습니다.");
 
-            // 상품 설명 수정
-        } else if (userEditIdx == 2) {
+
+        } // 상품 설명 수정
+        else if (menu.getUserInput() == 2) {
 
             //변경 전 설명
             String oldDesc = oldProduct.getDescription();
@@ -423,8 +606,9 @@ public class CommerceSystem {
             oldProduct.setDescription(inputDescription);
             System.out.println(oldProduct.getName() + "의 설명이 [" + oldDesc + " ] -> [ " + oldProduct.getDescription() + " ]으로 수정되었습니다.");
 
-            // 재고 수량 수정
-        } else if (userEditIdx == 3) {
+
+        } // 재고 수량 수정
+        else if (menu.getUserInput() == 3) {
 
             //변경 전 재고량
             int oldStock = oldProduct.getStockQuantity();
@@ -442,46 +626,44 @@ public class CommerceSystem {
         return true;
     }
 
-    public boolean deleteProduct() {
 
-        // 제거할 카테고리 선택 -----------------------------------------------------
-
-        // 카테고리 선택 메뉴 생성
-        String messageSelect = "카테고리를선택하세요\n" + toStringCategories() + "번호를 입력하세요: ";
-        Menu selectCategory = new Menu(MenuType.SELECT, "카테고리선택", messageSelect);
-
-        // 카테고리 선택 입력받기
-        int inputCategory = scannerSystem.getValidatedInput(1, categories.size());
+    public boolean manageDeleteProduct() {
 
         // 제거할 상품 선택 --------------------------------------------------------
-
-        // 상품 선택 메뉴 생성
-        String messageProduct = getCategory(inputCategory).showProductsInfo() + "\n상품을선택하세요: ";
-        Menu selectProduct = new Menu(MenuType.SELECT, "상품선택", messageProduct);
+        if(getCategory(curCategory).getProductsSize()<1){
+            System.out.println("제거할 상품이 없습니다.");
+            return false;
+        }
+        // 상품 선택 메뉴 가져오기
+        Menu menu = getMenu(MenuType.MANAGEMENT_DELETE_SELECT_PRODUCT);
+        String messageProduct = getCategory(curCategory).showProductsInfo() + "상품을선택하세요: ";
+        menu.setInfoMessage(messageProduct);
+        menu.setInputRange(1, getCategory(curCategory).getProductsSize());
 
         // 상품 선택 입력받기
-        int inputProduct = scannerSystem.getValidatedInput(1, getCategory(inputCategory).getProductsSize());
-
-        // 제거할 상품 가져오기
-        Product deleteProduct = getCategory(inputCategory).getProduct(inputProduct);
-
-        // 제거 확정받기 -------------------------------------------------------------
-
-        // 제거 확인 메뉴 생성
-        String messageDelete = "제거하시겠습니까?\n1.확인 2.취소";
-        Menu confirmMenu = new Menu(MenuType.CANCEL_OR_CONFIRM, "카테고리제거", messageDelete);
-
-        // 제거 확인 입력받기
-        int inputDelete = scannerSystem.getValidatedInput(1, 2);
-
-        if (confirmMenu.isSelectCancle(inputDelete)) {
+        if (!menu.menuProgress()) {
             return false;
         }
 
+        return true;
+    }
+
+    public boolean manageDeleteConfirm() {
+
+        Menu menu = getMenu(MenuType.MANAGEMENT_DELETE_CONFIM);
+
+        // 제거 확인 입력받기
+        if (!menu.menuProgress())
+            return false;
+
         // 상품 제거 실행 -------------------------------------------------------------
 
+        // 제거할 상품 가져오기
+        int userInput = getMenu(MenuType.MANAGEMENT_DELETE_SELECT_PRODUCT).getUserInput();
+        String deleteProductName = getCategory(curCategory).getProduct(userInput).getName();
+
         // 상품 제거
-        if (!getCategory(inputCategory).deleteProduct(inputProduct)) {
+        if (!getCategory(curCategory).deleteProduct(userInput)) {
             System.out.println("상품 제거 실패");
             return false;
         } else {
@@ -489,12 +671,30 @@ public class CommerceSystem {
         }
 
         // 장바구니 제거
-        if (cart.removeItem(deleteProduct.getName())) {
+
+        if (cart.removeItem(deleteProductName)) {
             System.out.println("장바구니 제거 완료");
         }
 
         return true;
     }
+
+    public boolean manageDeleteCategory() {
+
+        // 제거할 카테고리 선택
+
+        Menu menu = getMenu(MenuType.MANAGEMENT_DELETE);
+        menu.setInputRange(1, categories.size());
+
+        if (!menu.menuProgress())
+            return false;
+
+        curCategory = menu.getUserInput();
+
+        return true;
+    }
+
 }
+
 
 
