@@ -62,11 +62,13 @@ public class Category {
 
     public Product getProduct(String name){
 
+        /*
         Product matchItem = searchEngine.getSortedProducts().stream()
                 .filter(product -> product.getName().equals(name))
                 .findFirst()
                 .orElse(null);
-
+        */
+        Product matchItem = searchEngine.getProducts(name);
         return matchItem;
     }
     public int getProductsSize() {
