@@ -64,20 +64,15 @@ public class Category {
 
     public Product getProduct(String name){
 
-        Product matchItem = searchEngine.getProducts(name);
-        return matchItem;
-    }
-
-    public Product getProductLinear(String name){
-
+        /*
         Product matchItem = searchEngine.getSortedProducts().stream()
                 .filter(product -> product.getName().equals(name))
                 .findFirst()
                 .orElse(null);
-
+        */
+        Product matchItem = searchEngine.getProducts(name);
         return matchItem;
     }
-
     public int getProductsSize() {
         return searchEngine.getSortedProducts().size();
     }
