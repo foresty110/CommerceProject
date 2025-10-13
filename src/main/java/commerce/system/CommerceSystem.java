@@ -1,5 +1,6 @@
 package commerce.system;
 
+import commerce.Constants;
 import commerce.cart.Cart;
 import commerce.cart.CartItem;
 import commerce.category.Category;
@@ -25,8 +26,6 @@ public class CommerceSystem {
 
     private Cart cart = new Cart();
     private Customer customer = new Customer("김자바", "java123@gamil.com", CustomerGrade.PLATINUM);
-
-    private final String PASSWORD = "admin123";
 
     private int curCategory;
 
@@ -450,7 +449,7 @@ public class CommerceSystem {
             System.out.print("비밀번호를 입력하세요: ");
             String inputPassword = scannerSystem.getValidatedInput();
 
-            if (PASSWORD.equals(inputPassword)) {
+            if (Constants.PASSWORD.equals(inputPassword)) {
                 break;
             } else {
                 System.out.println("비밀번호가 다릅니다.");

@@ -38,16 +38,20 @@ public class SearchEngine {
         if (left > right)
             return null;
 
+        //비교 횟수 증가
         compareCount++;
+
         int mid = (left + right) / 2;
         String findProductName = sortedProducts.get(mid).getName();
 
+        // 문자열 비교
         int findResult = findProductName.compareTo(productName);
-        if (findResult == 0){
+
+        if (findResult == 0){ // 검색한 상품명과 일치할 경우
             return sortedProducts.get(mid);
-        }else if (findResult > 0){
+        }else if (findResult > 0){ // 검색한 상품명 보다 사전적으로 순서가 뒤에 있음
            return binarySearchRecursive(productName, left, mid - 1);
-        }else if (findResult < 0){
+        }else if (findResult < 0){ // 검색한 상품명 보다 사전적으로 순서가 앞에 있음
            return binarySearchRecursive(productName,mid + 1, right );
         }
 
@@ -66,12 +70,14 @@ public class SearchEngine {
             int mid = (left + right) / 2;
             String findProductName = sortedProducts.get(mid).getName();
 
+            // 문자열 비교
             int findResult = findProductName.compareTo(productName);
-            if (findResult == 0) {
+
+            if (findResult == 0) { // 검색한 상품명과 일치할 경우
                 return sortedProducts.get(mid);
-            } else if (findResult > 0) {
+            } else if (findResult > 0) { // 검색한 상품명 보다 사전적으로 순서가 뒤에 있음
                 right = mid - 1;
-            } else if (findResult < 0) {
+            } else if (findResult < 0) { // 검색한 상품명 보다 사전적으로 순서가 앞에 있음
                 left = mid + 1;
             }
 
