@@ -2,25 +2,34 @@ package commerce.system;
 
 import commerce.category.Product;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchEngine {
-    private List<Product> sortedProducts;
+    private List<Product> sortedProducts = new ArrayList<>();
+    private int compareCount = 0;
 
-    public SearchEngine(List<Product> sortedProducts) {
+    public void setSortedProducts(List<Product> sortedProducts) {
         this.sortedProducts = sortedProducts;
-
-        Collections.sort(sortedProducts,(a,b)->a.getName().compareTo(b.getName()));
-
     }
 
     public List<Product> getSortedProducts() {
+        if(sortedProducts.isEmpty()){
+            return null;
+        }
         return sortedProducts;
     }
 
-    public Product getProducts(String productName) {
-       return binarySearchRecursive(productName,0,sortedProducts.size()-1);
+    public int getCompareCount() {
+        return compareCount;
+    }
+
+    public Product searchProductsBinary(String productName) {
+
+        //비교 횟수 초기화
+        compareCount = 0;
+
+        return binarySearchRecursive(productName,0,sortedProducts.size()-1);
     }
 
     // 이진탐색 - 재귀 방식
@@ -29,6 +38,7 @@ public class SearchEngine {
         if (left > right)
             return null;
 
+        compareCount++;
         int mid = (left + right) / 2;
         String findProductName = sortedProducts.get(mid).getName();
 
@@ -51,6 +61,7 @@ public class SearchEngine {
         int right = sortedProducts.size() - 1;
 
         while (left <= right) {
+            compareCount++;
 
             int mid = (left + right) / 2;
             String findProductName = sortedProducts.get(mid).getName();
@@ -64,6 +75,21 @@ public class SearchEngine {
                 left = mid + 1;
             }
 
+        }
+        return null;
+    }
+
+    public Product searchProductsLinear(String name) {
+
+        //비교 횟수 초기화
+        compareCount = 0;
+
+        // (완전탐색)
+        for (Product product : sortedProducts) {
+            compareCount++;
+            if (product.getName().contains(name)) {
+                return product;
+            }
         }
         return null;
     }

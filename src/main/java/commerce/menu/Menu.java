@@ -73,9 +73,9 @@ public class Menu {
         ScannerSystem scannerSystem = new ScannerSystem();
 
         if (condition) {
-            userInput = scannerSystem.getValidatedInput(new int[]{0, 1, 2, 3, 4, 5, 6});
+            userInput = scannerSystem.getValidatedInput(new int[]{0, 1, 2, 3, 4, 5, 6, 7});
         } else {
-            userInput = scannerSystem.getValidatedInput(new int[]{0, 1, 2, 3, 6});
+            userInput = scannerSystem.getValidatedInput(new int[]{0, 1, 2, 3, 6, 7});
         }
 
         //프로그램 종료

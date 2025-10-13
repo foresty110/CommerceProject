@@ -9,6 +9,7 @@ import commerce.customer.CustomerGrade;
 import commerce.menu.Menu;
 import commerce.menu.MenuActionType;
 import commerce.menu.MenuType;
+import commerce.test.PerformanceTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,16 @@ import java.util.Scanner;
 
 public class CommerceSystem {
 
-    private Scanner scanner = new Scanner(System.in);
-    private List<Category> categories = new ArrayList<>();
-    private Cart cart = new Cart();
     private ScannerSystem scannerSystem = new ScannerSystem();
-    private Customer customer = new Customer("김자바", "java123@gamil.com", CustomerGrade.PLATINUM);
-    private final String PASSWORD = "admin123";
+    private PerformanceTest performanceTest = new PerformanceTest();
+
     private List<Menu> menuList = new ArrayList<>();
+    private List<Category> categories = new ArrayList<>();
+
+    private Cart cart = new Cart();
+    private Customer customer = new Customer("김자바", "java123@gamil.com", CustomerGrade.PLATINUM);
+
+    private final String PASSWORD = "admin123";
 
     private int curCategory;
 
@@ -244,7 +248,7 @@ public class CommerceSystem {
                 infoMessage += "\n4. 장바구니 확인\t| 장바구니를 확인 후 주문합니다." +
                         "\n5. 주문 취소\t| 진행중인 주문을 취소합니다.";
             }
-            infoMessage += "\n6. 관리자 모드\n0. 프로그램 종료\n번호를 선택하세요: ";
+            infoMessage += "\n6. 관리자 모드\n7. 상품 검색 성능 테스트\n0. 프로그램 종료\n번호를 선택하세요: ";
 
             menu.setInfoMessage(infoMessage);
             menu.setCondition(cart.getCartItemAmount() > 0);
@@ -277,10 +281,29 @@ public class CommerceSystem {
                 if (!accessPassword())
                     continue;
                 manageMain();
+            } else if (curCategory == 7) {
+                if(!performanceTest())
+                    continue;
             }
 
             break;
         }
+        return true;
+    }
+
+    private boolean performanceTest() {
+
+        System.out.println("[검색 성능 비교 테스트]");
+
+        //대용량 데이터 생성
+        performanceTest.createData();
+
+        //찾을 상품명 입력받기
+        System.out.print("검색어: ");
+        String userInput = scannerSystem.getValidatedInput();
+
+        //상품 찾기
+        performanceTest.compareSearchPerformance(userInput);
         return true;
     }
 

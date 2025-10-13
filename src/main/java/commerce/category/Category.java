@@ -10,11 +10,13 @@ import java.util.stream.Collectors;
 public class Category {
 
     private String name;
+    private List<Product> productList;
+
     private SearchEngine searchEngine;
 
     public Category(List<Product> products, String name) {
        this.name = name;
-        this.searchEngine = new SearchEngine(products);
+       this.productList = products;
     }
 
     public String getName() {
@@ -23,7 +25,7 @@ public class Category {
 
     public boolean addProduct(Product findProduct) {
 
-        Product matchItem = searchEngine.getSortedProducts().stream()
+        Product matchItem = productList.stream()
                 .filter(product -> product.getName().equals(findProduct.getName()))
                 .findFirst()
                 .orElse(null);
@@ -31,7 +33,7 @@ public class Category {
         //카테고리에 존재하지 않는 상품이면
         if (matchItem == null) {
             //상품 목록에 추가
-            this.searchEngine.getSortedProducts().add(findProduct);
+            this.productList.add(findProduct);
             return true;
 
         }//존재하지 않는 상품이면
@@ -42,12 +44,12 @@ public class Category {
     }
 
     public Product getProduct(int idx, Predicate<Product> condition) {
-        if (searchEngine.getSortedProducts().size() < idx || idx < 1) {
+        if (productList.size() < idx || idx < 1) {
             return null;
         }
 
         //필터걸기
-        List<Product> filtered = searchEngine.getSortedProducts().stream()
+        List<Product> filtered = productList.stream()
                 .filter(condition)
                 .toList();
 
@@ -55,30 +57,28 @@ public class Category {
     }
 
     public Product getProduct(int idx) {
-        if (searchEngine.getSortedProducts().size() < idx || idx < 1) {
+        if (productList.size() < idx || idx < 1) {
             return null;
         }
 
-        return searchEngine.getSortedProducts().get(idx - 1);
+        return productList.get(idx - 1);
     }
 
     public Product getProduct(String name){
 
-        /*
-        Product matchItem = searchEngine.getSortedProducts().stream()
+        Product matchItem = productList.stream()
                 .filter(product -> product.getName().equals(name))
                 .findFirst()
                 .orElse(null);
-        */
-        Product matchItem = searchEngine.getProducts(name);
+
         return matchItem;
     }
     public int getProductsSize() {
-        return searchEngine.getSortedProducts().size();
+        return productList.size();
     }
 
     public int getProductsSizeUnder(){
-        List<Product> filtered = searchEngine.getSortedProducts().stream()
+        List<Product> filtered = productList.stream()
                 .filter(product -> product.getPrice() <= 1000000)
                 .toList();
 
@@ -87,7 +87,7 @@ public class Category {
     public int getProductsSizeOver() {
 
         //필터걸기
-        List<Product> filtered = searchEngine.getSortedProducts().stream()
+        List<Product> filtered = productList.stream()
                 .filter(product -> product.getPrice() > 1000000)
                 .toList();
 
@@ -97,7 +97,7 @@ public class Category {
     public String showProductsInfo() {
         String info = "";
         int count = 1;
-        for (Product p : searchEngine.getSortedProducts()) {
+        for (Product p : productList) {
             info += count++ + ". " + p.toString() + "\n";
         }
         return info;
@@ -107,7 +107,7 @@ public class Category {
 
         AtomicInteger count = new AtomicInteger(1);
 
-        String info = searchEngine.getSortedProducts().stream()
+        String info = productList.stream()
                 .filter(product -> product.getPrice() > 1000000)
                 .map(product -> count.getAndIncrement() + ". " + product.toString())
                 .collect(Collectors.joining("\n"));
@@ -118,7 +118,7 @@ public class Category {
 
         AtomicInteger count = new AtomicInteger(1);
 
-        String info = searchEngine.getSortedProducts().stream()
+        String info = productList.stream()
                 .filter(product -> product.getPrice() <= 1000000)
                 .map(product -> count.getAndIncrement() + ". " + product.toString())
                 .collect(Collectors.joining("\n"));
@@ -130,10 +130,10 @@ public class Category {
 
 
     public boolean deleteProduct(int idx) {
-        if (searchEngine.getSortedProducts().size() < idx || idx < 1) {
+        if (productList.size() < idx || idx < 1) {
             return false;
         }
-        searchEngine.getSortedProducts().remove(idx - 1);
+        productList.remove(idx - 1);
         return true;
     }
 
