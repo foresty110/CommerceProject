@@ -1,4 +1,6 @@
-package commerce;
+package commerce.menu;
+
+import commerce.system.ScannerSystem;
 
 public class Menu {
     private MenuType menuType;

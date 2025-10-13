@@ -1,4 +1,4 @@
-package commerce;
+package commerce.category;
 
 public class Product {
 

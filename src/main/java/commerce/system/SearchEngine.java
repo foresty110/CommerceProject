@@ -1,6 +1,7 @@
-package commerce;
+package commerce.system;
 
-import java.util.Arrays;
+import commerce.category.Product;
+
 import java.util.Collections;
 import java.util.List;
 

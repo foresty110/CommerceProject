@@ -1,4 +1,6 @@
-package commerce;
+package commerce.cart;
+
+import commerce.category.Product;
 
 import java.util.ArrayList;
 import java.util.List;

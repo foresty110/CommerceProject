@@ -1,4 +1,4 @@
-package commerce;
+package commerce.system;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;

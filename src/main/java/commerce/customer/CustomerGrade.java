@@ -1,4 +1,4 @@
-package commerce;
+package commerce.customer;
 
 public enum CustomerGrade {
     BRONZE(0),

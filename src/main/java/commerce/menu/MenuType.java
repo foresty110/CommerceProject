@@ -1,4 +1,4 @@
-package commerce;
+package commerce.menu;
 
 public enum MenuType {
     MAIN("커머스 플랫폼 메인"),

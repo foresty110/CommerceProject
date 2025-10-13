@@ -1,4 +1,6 @@
-package commerce;
+package commerce.category;
+
+import commerce.system.SearchEngine;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;

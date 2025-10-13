@@ -1,4 +1,14 @@
-package commerce;
+package commerce.system;
+
+import commerce.cart.Cart;
+import commerce.cart.CartItem;
+import commerce.category.Category;
+import commerce.category.Product;
+import commerce.customer.Customer;
+import commerce.customer.CustomerGrade;
+import commerce.menu.Menu;
+import commerce.menu.MenuActionType;
+import commerce.menu.MenuType;
 
 import java.util.ArrayList;
 import java.util.List;

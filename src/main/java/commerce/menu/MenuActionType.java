@@ -1,4 +1,4 @@
-package commerce;
+package commerce.menu;
 
 public enum MenuActionType {
     CANCEL_OR_CONFIRM,
