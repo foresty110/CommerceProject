@@ -15,7 +15,7 @@ public class Menu {
     private boolean inputCondition;
 
 
-    Menu(MenuType menuType, MenuActionType menuActionType) {
+    public Menu(MenuType menuType, MenuActionType menuActionType) {
         this.menuType = menuType;
         this.menuActionType = menuActionType;
         this.name = menuType.getName();

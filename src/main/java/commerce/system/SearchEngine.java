@@ -8,7 +8,7 @@ import java.util.List;
 public class SearchEngine {
     private List<Product> sortedProducts;
 
-    SearchEngine(List<Product> sortedProducts) {
+    public SearchEngine(List<Product> sortedProducts) {
         this.sortedProducts = sortedProducts;
 
         Collections.sort(sortedProducts,(a,b)->a.getName().compareTo(b.getName()));
