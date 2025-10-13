@@ -40,13 +40,30 @@ public class SearchEngine {
            return binarySearchRecursive(productName,mid + 1, right );
         }
 
-        // 구현하세요
         return null;
     }
 
     // 이진탐색 - 반복문 방식
     public Product binarySearchIterative(String productName) {
-        // 구현하세요
+
+        int left = 0;
+        int right = sortedProducts.size() - 1;
+
+        while (left <= right) {
+
+            int mid = (left + right) / 2;
+            String findProductName = sortedProducts.get(mid).getName();
+
+            int findResult = findProductName.compareTo(productName);
+            if (findResult == 0) {
+                return sortedProducts.get(mid);
+            } else if (findResult > 0) {
+                right = mid - 1;
+            } else if (findResult < 0) {
+                left = mid + 1;
+            }
+
+        }
         return null;
     }
 }
