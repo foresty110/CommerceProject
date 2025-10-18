@@ -1,5 +1,6 @@
 package commerce.category;
 
+import commerce.Constants;
 import commerce.system.SearchEngine;
 
 import java.util.List;
@@ -108,7 +109,7 @@ public class Category {
         AtomicInteger count = new AtomicInteger(1);
 
         String info = productList.stream()
-                .filter(product -> product.getPrice() > 1000000)
+                .filter(product -> product.getPrice() > Constants.PRODUCT_FILTER_PRICE)
                 .map(product -> count.getAndIncrement() + ". " + product.toString())
                 .collect(Collectors.joining("\n"));
 
@@ -119,7 +120,7 @@ public class Category {
         AtomicInteger count = new AtomicInteger(1);
 
         String info = productList.stream()
-                .filter(product -> product.getPrice() <= 1000000)
+                .filter(product -> product.getPrice() <= Constants.PRODUCT_FILTER_PRICE)
                 .map(product -> count.getAndIncrement() + ". " + product.toString())
                 .collect(Collectors.joining("\n"));
 

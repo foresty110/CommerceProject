@@ -4,17 +4,19 @@ import commerce.Constants;
 import commerce.cart.Cart;
 import commerce.cart.CartItem;
 import commerce.category.Category;
+import commerce.category.CategoryType;
 import commerce.category.Product;
 import commerce.customer.Customer;
 import commerce.customer.CustomerGrade;
 import commerce.menu.Menu;
 import commerce.menu.MenuActionType;
 import commerce.menu.MenuType;
+import commerce.admin.AdminSystemType;
 import commerce.test.PerformanceTest;
+
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class CommerceSystem {
 
@@ -257,7 +259,9 @@ public class CommerceSystem {
 
             curCategory = menu.getUserInput();
 
-            if (curCategory == 1 || curCategory == 2 || curCategory == 3) {
+            if (curCategory == CategoryType.ELECTRONICS.getValue()
+                    || curCategory == CategoryType.CLOTHING.getValue()
+                    || curCategory == CategoryType.FOOD.getValue()) {
 
                 while (true) {
                     //카테고리 필터 선택 단계
@@ -323,13 +327,13 @@ public class CommerceSystem {
 
         int pickMax = 0;
         String productInfoMessage = "";
-        if (filter == 1) {
+        if (filter == CategoryType.ELECTRONICS.getValue()) {
             productInfoMessage = getCategory(curCategory).showProductsInfo();
             pickMax = getCategory(curCategory).getProductsSize();
-        } else if (filter == 2) {
+        } else if (filter == CategoryType.CLOTHING.getValue()) {
             productInfoMessage = getCategory(curCategory).showProductsInfoUnder();
             pickMax = getCategory(curCategory).getProductsSizeUnder();
-        } else if (filter == 3) {
+        } else if (filter == CategoryType.FOOD.getValue()) {
             productInfoMessage = getCategory(curCategory).showProductsInfoOver();
             pickMax = getCategory(curCategory).getProductsSizeOver();
         }
@@ -351,11 +355,11 @@ public class CommerceSystem {
 
         // 상품 상세 정보 출력하기
         Product product = null;
-        if (filter == 1) {
+        if (filter == CategoryType.ELECTRONICS.getValue()) {
             product = category.getProduct(userInput);
-        } else if (filter == 2) {
+        } else if (filter == CategoryType.CLOTHING.getValue()) {
             product = category.getProduct(userInput, p -> p.getPrice() <= 1000000);
-        } else if (filter == 3) {
+        } else if (filter == CategoryType.FOOD.getValue()) {
             product = category.getProduct(userInput, p -> p.getPrice() > 1000000);
         }
 
@@ -437,7 +441,7 @@ public class CommerceSystem {
     public boolean accessPassword() {
 
         //비밀번호 인증
-        int accessCount = 3;
+        int accessCount = Constants.PASSWORD_ATTEMPT_LIMIT;
         while (accessCount-- >= 0) {
 
             if (accessCount == -1) {
@@ -469,10 +473,10 @@ public class CommerceSystem {
                 return false;
 
             curCategory = menu.getUserInput();
-
+            AdminSystemType adminSystemType = AdminSystemType.fromValue(curCategory);
             // 관리자 모드 메뉴 실행
-            switch (curCategory) {
-                case 1:
+            switch (adminSystemType) {
+                case ADD_Product:
                     //상품 추가
                     if (!manageAddProduct())
                         continue;
@@ -482,7 +486,7 @@ public class CommerceSystem {
                     break;
 
                 //관리자 모드 - 상품 수정
-                case 2:
+                case MODIFY_PRODUCT:
                     if (!manageModifyCategory())
                         continue;
                     if (!manageModifyProduct())
@@ -493,7 +497,7 @@ public class CommerceSystem {
                     break;
 
                 //관리자 모드 - 상품 삭제
-                case 3:
+                case DELETE_PRODUCT:
                     if (!manageDeleteCategory())
                         continue;
                     if (!manageDeleteProduct())
