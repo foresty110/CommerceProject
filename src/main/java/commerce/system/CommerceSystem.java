@@ -20,14 +20,14 @@ import java.util.List;
 
 public class CommerceSystem {
 
-    private ScannerSystem scannerSystem = new ScannerSystem();
-    private PerformanceTest performanceTest = new PerformanceTest();
+    private final ScannerSystem scannerSystem = new ScannerSystem();
+    private final PerformanceTest performanceTest = new PerformanceTest();
 
     private List<Menu> menuList = new ArrayList<>();
     private List<Category> categories = new ArrayList<>();
 
-    private Cart cart = new Cart();
-    private Customer customer = new Customer("김자바", "java123@gamil.com", CustomerGrade.PLATINUM);
+    private final Cart cart = new Cart();
+    private final Customer customer = new Customer("김자바", "java123@gamil.com", CustomerGrade.PLATINUM);
 
     private int curCategory;
 
@@ -117,11 +117,16 @@ public class CommerceSystem {
         //-------------------------------------------------------------------------------
 
         menu = new Menu(MenuType.SHOW_FILTER, MenuActionType.SELECT);
-        String categoryFilterMessage = "1.전체 상품 보기" +
-                "\n2.가격대별 필터링(100만원 이하)" +
-                "\n3.가격대별 필터링(100만원 초과)" +
-                "\n0. 뒤로가기" +
-                "\n번호를 선택하세요: ";
+        String categoryFilterMessage = """
+                1.전체 상품 보기\
+                
+                2.가격대별 필터링(100만원 이하)\
+                
+                3.가격대별 필터링(100만원 초과)\
+                
+                0. 뒤로가기\
+                
+                번호를 선택하세요:\s""";
         addMenu(menu);
         menu.setInfoMessage(categoryFilterMessage);
         menu.setInputRange(0, 3);
@@ -152,11 +157,16 @@ public class CommerceSystem {
         //---------------------------------------------------
         //메뉴 추가 - 관리자 모드
         menu = new Menu(MenuType.MANAGEMENT_MAIN, MenuActionType.SELECT);
-        menu.setInfoMessage( "1. 상품 추가" +
-                        "\n2. 상품 수정" +
-                        "\n3. 상품 삭제" +
-                        "\n0. 메인으로 돌아가기" +
-                        "\n관리자 모드 번호를 입력하세요: "
+        menu.setInfoMessage("""
+                1. 상품 추가\
+                
+                2. 상품 수정\
+                
+                3. 상품 삭제\
+                
+                0. 메인으로 돌아가기\
+                
+                관리자 모드 번호를 입력하세요:\s"""
         );
         menu.setInputRange(0, 3);
         addMenu(menu);
@@ -166,11 +176,16 @@ public class CommerceSystem {
         // 관리자 모드 - 카테고리 상품 추가
 
         menu = new Menu(MenuType.MANAGEMENT_ADD_CATEGORY, MenuActionType.SELECT);
-        menu.setInfoMessage("어느 카테고리에 상품을 추가하시겠습니까?" +
-                "\n1. 전자제품" +
-                "\n2. 의류" +
-                "\n3. 식품" +
-                "\n카테고리 번호를 입력하세요: ");
+        menu.setInfoMessage("""
+                어느 카테고리에 상품을 추가하시겠습니까?\
+                
+                1. 전자제품\
+                
+                2. 의류\
+                
+                3. 식품\
+                
+                카테고리 번호를 입력하세요:\s""");
         menu.setInputRange(1, 3);
         addMenu(menu);
 
@@ -203,11 +218,16 @@ public class CommerceSystem {
         //----------------------------------------
         // 메뉴 추가 - 관리자 모드/ 수정할 카테고리 선택
         menu = new Menu(MenuType.MANAGEMENT_MODIFY_CATEGORY, MenuActionType.SELECT);
-        menu.setInfoMessage("어느 카테고리 상품을 수정하시겠습니까?" +
-                "\n1. 전자제품" +
-                "\n2. 의류" +
-                "\n3. 식품" +
-                "\n카테고리 번호를 입력하세요: ");
+        menu.setInfoMessage("""
+                어느 카테고리 상품을 수정하시겠습니까?\
+                
+                1. 전자제품\
+                
+                2. 의류\
+                
+                3. 식품\
+                
+                카테고리 번호를 입력하세요:\s""");
         menu.setInputRange(1, 3);
         addMenu(menu);
 
@@ -246,8 +266,11 @@ public class CommerceSystem {
 
             String infoMessage = "1. 전자제품\n2. 의류\n3. 식품";
             if (cart.getCartItemAmount() > 0) {
-                infoMessage += "\n4. 장바구니 확인\t| 장바구니를 확인 후 주문합니다." +
-                        "\n5. 주문 취소\t| 진행중인 주문을 취소합니다.";
+                infoMessage += """
+                        
+                        4. 장바구니 확인\t| 장바구니를 확인 후 주문합니다.\
+                        
+                        5. 주문 취소\t| 진행중인 주문을 취소합니다.""";
             }
             infoMessage += "\n6. 관리자 모드\n7. 상품 검색 성능 테스트\n0. 프로그램 종료\n번호를 선택하세요: ";
 
@@ -312,10 +335,7 @@ public class CommerceSystem {
 
     public boolean showFilter() {
         Menu menu = getMenu(MenuType.SHOW_FILTER);
-        if (!menu.menuProgress())
-            return false;
-
-        return true;
+        return menu.menuProgress();
     }
 
     public boolean showProduct() {
@@ -341,10 +361,7 @@ public class CommerceSystem {
         menu.setInfoMessage(productInfoMessage);
         menu.setInputRange(0, pickMax);
 
-        if (!menu.menuProgress())
-            return false;
-
-        return true;
+        return menu.menuProgress();
     }
 
     public boolean selectAddCartStep() {
@@ -463,7 +480,7 @@ public class CommerceSystem {
         return true;
     }
 
-    public boolean manageMain() {
+    public void manageMain() {
 
         while (true) {
 
@@ -677,11 +694,7 @@ public class CommerceSystem {
         menu.setInputRange(1, getCategory(curCategory).getProductsSize());
 
         // 상품 선택 입력받기
-        if (!menu.menuProgress()) {
-            return false;
-        }
-
-        return true;
+        return menu.menuProgress();
     }
 
     public boolean manageDeleteConfirm() {

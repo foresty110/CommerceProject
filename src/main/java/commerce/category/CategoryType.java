@@ -6,7 +6,7 @@ public enum CategoryType {
     CLOTHING(2), // 의류
     FOOD(3); // 음식
 
-    private int value;
+    private final int value;
     CategoryType(int value) {
         this.value = value;
     }

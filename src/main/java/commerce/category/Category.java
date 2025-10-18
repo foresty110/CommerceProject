@@ -10,10 +10,8 @@ import java.util.stream.Collectors;
 
 public class Category {
 
-    private String name;
+    private final String name;
     private List<Product> productList;
-
-    private SearchEngine searchEngine;
 
     public Category(List<Product> products, String name) {
        this.name = name;
@@ -66,13 +64,10 @@ public class Category {
     }
 
     public Product getProduct(String name){
-
-        Product matchItem = productList.stream()
+        return productList.stream()
                 .filter(product -> product.getName().equals(name))
                 .findFirst()
                 .orElse(null);
-
-        return matchItem;
     }
     public int getProductsSize() {
         return productList.size();
@@ -108,27 +103,20 @@ public class Category {
 
         AtomicInteger count = new AtomicInteger(1);
 
-        String info = productList.stream()
+        return productList.stream()
                 .filter(product -> product.getPrice() > Constants.PRODUCT_FILTER_PRICE)
                 .map(product -> count.getAndIncrement() + ". " + product.toString())
                 .collect(Collectors.joining("\n"));
-
-        return info;
     }
     public String showProductsInfoUnder() {
 
         AtomicInteger count = new AtomicInteger(1);
 
-        String info = productList.stream()
+        return productList.stream()
                 .filter(product -> product.getPrice() <= Constants.PRODUCT_FILTER_PRICE)
                 .map(product -> count.getAndIncrement() + ". " + product.toString())
                 .collect(Collectors.joining("\n"));
-
-        return info;
     }
-
-
-
 
     public boolean deleteProduct(int idx) {
         if (productList.size() < idx || idx < 1) {

@@ -5,13 +5,10 @@ public enum AdminSystemType {
     MODIFY_PRODUCT(2), //상품 수정
     DELETE_PRODUCT(3); //상품 삭제
 
-    private int value;
+    private final int value;
 
     AdminSystemType(int value) {
         this.value = value;
-    }
-    public int getValue() {
-        return value;
     }
 
     public static AdminSystemType fromValue(int value) {

@@ -51,7 +51,7 @@ public class SearchEngine {
             return sortedProducts.get(mid);
         }else if (findResult > 0){ // 탐색한 상품이 내가 찾고자 하는 것 보다 사전적으로 순서가 뒤에 있음 -> 앞으로 이동해야한다
            return binarySearchRecursive(productName, left, mid - 1);
-        }else if (findResult < 0){ // 탐색한 상품이 내가 찾고자 하는 것 보다 사전적으로 순서가 앞에 있음 -> 뒤로 이동해야한다
+        }else { // 탐색한 상품이 내가 찾고자 하는 것 보다 사전적으로 순서가 앞에 있음 -> 뒤로 이동해야한다
            return binarySearchRecursive(productName,mid + 1, right );
         }
 
@@ -77,7 +77,7 @@ public class SearchEngine {
                 return sortedProducts.get(mid);
             } else if (findResult > 0) { // 탐색한 상품이 내가 찾고자 하는 것 보다 사전적으로 순서가 뒤에 있음 -> 앞으로 이동해야한다
                 right = mid - 1;
-            } else if (findResult < 0) { // 탐색한 상품이 내가 찾고자 하는 것 보다 사전적으로 순서가 앞에 있음 -> 뒤로 이동해야한다
+            } else { // 탐색한 상품이 내가 찾고자 하는 것 보다 사전적으로 순서가 앞에 있음 -> 뒤로 이동해야한다
                 left = mid + 1;
             }
 

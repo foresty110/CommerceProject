@@ -2,7 +2,6 @@ package commerce.test;
 
 import commerce.Constants;
 import commerce.category.Product;
-import commerce.system.ScannerSystem;
 import commerce.system.SearchEngine;
 
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PerformanceTest {
-    private SearchEngine searchEngine = new SearchEngine();
+    private final SearchEngine searchEngine = new SearchEngine();
     private Product findProduct;
 
     public void createData() {
@@ -23,7 +22,7 @@ public class PerformanceTest {
             return;
         }
 
-        List<Product> sortedProducts = new ArrayList<Product>();
+        List<Product> sortedProducts = new ArrayList<>();
 
         // 임의의 데이터 생성
         for (int i = 1; i <= Constants.PERFORMANCE_TESTCASE; i++) {
@@ -79,10 +78,8 @@ public class PerformanceTest {
         // 검색 완료 후 시간 측정
         long end = System.nanoTime();
 
-        // 검색하는데 걸린 시간 계산
-        long elapsedTime = end - start;
-
-        return elapsedTime;
+        // 검색하는데 걸린 시간 반환
+        return end - start;
     }
 
     private long measureLinearSearch(String name) {
@@ -96,10 +93,8 @@ public class PerformanceTest {
         // 검색 완료 후 시간 측정
         long end = System.nanoTime();
 
-        // 검색하는데 걸린 시간 계산
-        long elapsedTime = end - start;
-
-        return elapsedTime;
+        // 검색하는데 걸린 시간 반환
+        return end - start;
     }
 
 }

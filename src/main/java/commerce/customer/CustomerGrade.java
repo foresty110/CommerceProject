@@ -8,7 +8,7 @@ public enum CustomerGrade {
     GOLD(Constants.DISCOUNT_GOLD), // 골드 등급
     PLATINUM(Constants.DISCOUNT_PLATINUM); // 플래티넘 등급
 
-    private int value;
+    private final int value;
     CustomerGrade(int value) {
         this.value = value;
     }
