@@ -31,7 +31,7 @@ public class PerformanceTest {
         }
 
         // 데이터 정렬
-        Collections.sort(sortedProducts, (a, b) -> a.getName().compareTo(b.getName()));
+        sortedProducts.sort((a, b) -> a.getName().compareTo(b.getName()));
 
         // 데이터 저장
         searchEngine.setSortedProducts(sortedProducts);

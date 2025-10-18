@@ -487,7 +487,7 @@ public class CommerceSystem {
             //관리자 모드 선택
             Menu menu = getMenu(MenuType.MANAGEMENT_MAIN);
             if (!menu.menuProgress())
-                return false;
+                return ;
 
             curCategory = menu.getUserInput();
             AdminSystemType adminSystemType = AdminSystemType.fromValue(curCategory);

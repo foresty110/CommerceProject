@@ -1,7 +1,6 @@
 package commerce.category;
 
 import commerce.Constants;
-import commerce.system.SearchEngine;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,7 +10,7 @@ import java.util.stream.Collectors;
 public class Category {
 
     private final String name;
-    private List<Product> productList;
+    private final List<Product> productList;
 
     public Category(List<Product> products, String name) {
        this.name = name;

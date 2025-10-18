@@ -55,7 +55,7 @@ public class SearchEngine {
            return binarySearchRecursive(productName,mid + 1, right );
         }
 
-        return null;
+        //return null;
     }
 
     // 이진탐색 - 반복문 방식
