@@ -32,14 +32,21 @@ import java.util.List;
  **/
 public class CommerceSystem {
 
-    private final ScannerSystem scannerSystem = new ScannerSystem(); //사용자 입력 관리
-    private final PerformanceTest performanceTest = new PerformanceTest(); //상품 검색 성능 테스트
+    private final ScannerSystem scannerSystem; //사용자 입력 관리
+    private final PerformanceTest performanceTest; //상품 검색 성능 테스트
 
     private final List<Menu> menuList = new ArrayList<>(); //메뉴 목록 관리
     private final List<Category> categories = new ArrayList<>(); //카테고리 목록 관리
 
-    private final Cart cart = new Cart(); //장바구니
-    private final Customer customer = new Customer("김자바", "java123@gamil.com", CustomerGrade.PLATINUM); //테스트용 고객 정보
+    private final Cart cart; //장바구니
+    private final Customer customer ; //테스트용 고객 정보
+
+    public CommerceSystem() {
+        this.cart = new Cart();
+        this.customer = new Customer("김자바", "java123@gamil.com", CustomerGrade.PLATINUM);
+        this.scannerSystem = new ScannerSystem();
+        this.performanceTest = new PerformanceTest();
+    }
 
     private int curCategory;//현재 선택된 카테고리 인덱스
 
@@ -56,12 +63,12 @@ public class CommerceSystem {
     }
 
     public String toStringCategories() {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int count = 0;
         for (Category category : categories) {
-            result += ++count + "." + category.getName() + "\n";
+            result.append(++count).append(".").append(category.getName()).append("\n");
         }
-        return result;
+        return result.toString();
     }
 
     public int getTotalPrice() {
@@ -355,7 +362,6 @@ public class CommerceSystem {
         int filter = getMenu(MenuType.SHOW_FILTER).getUserInput();
 
         Menu menu = getMenu(MenuType.SHOW_PRODUCT);
-        menu.setName(getCategory(curCategory).getName() + "카테고리 선택");
 
         int pickMax = 0;
         String productInfoMessage = "";

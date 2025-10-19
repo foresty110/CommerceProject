@@ -27,15 +27,6 @@ public class Menu {
     public Menu(MenuType menuType, MenuActionType menuActionType) {
         this.menuType = menuType;
         this.menuActionType = menuActionType;
-        this.name = menuType.getName();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public MenuType getMenuType() {
@@ -43,7 +34,7 @@ public class Menu {
     }
 
     public void showInfoMessage() {
-        System.out.println("[ " + name + " ]");
+        System.out.println("[ " + this.menuType.getName() + " ]");
         System.out.println(infoMessage);
     }
 
@@ -127,13 +118,13 @@ public class Menu {
             case CANCEL_OR_CONFIRM:
 
                 if (select == 2) {
-                    System.out.println(this.name + "(을)를 취소합니다.");
+                    System.out.println(this.menuType.name() + "(을)를 취소합니다.");
                     return false;
                 }
                 break;
             case BACK:
                 if (select == 0) {
-                    System.out.println(this.name + "으로 돌아갑니다.");
+                    System.out.println(this.menuType.name() + "으로 돌아갑니다.");
                     return false;
                 }
                 break;

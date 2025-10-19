@@ -12,7 +12,7 @@ package commerce.category;
  **/
 public class Product {
 
-    private String name; // 상품 이름
+    private final String name; // 상품 이름
     private int price; // 상품 가격
     private String description; // 상품 설명
     private int stockQuantity; // 상품 수량

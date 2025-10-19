@@ -21,7 +21,6 @@ public class ScannerSystem {
 
         int userInput;
         //입력 예외처리
-
         while (true) {
             try {
                 userInput = scanner.nextInt();
@@ -37,7 +36,6 @@ public class ScannerSystem {
             } catch (InputMismatchException e) {
                 System.out.print("숫자를 입력해 주세요 :");
                 scanner.nextLine(); //줄바꿈 제거
-                continue;
             }
         }
 
@@ -73,7 +71,6 @@ public class ScannerSystem {
             } catch (InputMismatchException e) {
                 System.out.print("숫자를 입력해 주세요 :");
                 scanner.nextLine(); //줄바꿈 제거
-                continue;
             }
         }
 

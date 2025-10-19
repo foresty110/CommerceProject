@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 public class Category {
 
-    private final String name;
-    private final List<Product> productList;
+    private final String name; // 카테고리 이름
+    private final List<Product> productList; //카테고리에 포함된 상품 목록
 
     public Category(List<Product> products, String name) {
        this.name = name;
