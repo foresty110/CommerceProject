@@ -10,6 +10,5 @@ public enum MenuActionType {
     EXIT, // 종료
     SELECT, // 번호 선택
     INPUT,// 카테고리 선택
-    BACK;// 뒤로가기
-
+    BACK// 뒤로가기
 }

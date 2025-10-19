@@ -14,9 +14,8 @@ import commerce.system.ScannerSystem;
  * - 종료/뒤로가기/확인 등의 공통 동작 처리
  **/
 public class Menu {
-    private MenuType menuType; // 메뉴 타입
-    private MenuActionType menuActionType; // 메뉴 동작 타입
-    private String name; // 메뉴 이름
+    private final MenuType menuType; // 메뉴 타입
+    private final MenuActionType menuActionType; //
     private String infoMessage; // 메뉴 정보 메세지
     private int userInput; // 해당 메뉴 동작에서 사용자가 입력한 값
     private String userInputStr; // 해당 메뉴 동작에서 사용자가 입력한 값
@@ -79,11 +78,7 @@ public class Menu {
         }
 
         //프로그램 종료
-        if (!isSelectConfirm(userInput)) {
-            return false;
-        }
-
-        return true;
+        return isSelectConfirm(userInput);
     }
 
     public boolean inputMenu(int min, int max) {
@@ -93,11 +88,7 @@ public class Menu {
         userInput = scannerSystem.getValidatedInput(min, max);
 
         //프로그램 종료
-        if (!isSelectConfirm(userInput)) {
-            return false;
-        }
-
-        return true;
+        return isSelectConfirm(userInput);
     }
 
     public boolean inputMenu(){

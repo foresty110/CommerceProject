@@ -11,7 +11,7 @@ import java.util.List;
 - 장바구니에 상품 추가, 삭제, 조회, 구매 기능을 제공합니다.*/
 public class Cart {
 
-    private List<CartItem> items = new ArrayList<>(); // 장바구니에 추가된 상품 목록 리스트
+    private final List<CartItem> items = new ArrayList<>(); // 장바구니에 추가된 상품 목록 리스트
 
     public void addItem(CartItem newItem) {
 
@@ -48,10 +48,7 @@ public class Cart {
     // 장바구니에 상품 추가
     public boolean canAddToCart(Product product) {
 
-        if (product.getStockQuantity() < 1) {
-            return false;
-        }
-        return true;
+        return product.getStockQuantity() >= 1;
     }
 
     // 장바구니에 담긴 상품 개수 반환
@@ -62,11 +59,11 @@ public class Cart {
     // 장바구니에 담긴 상품 정보 출력
     public String showCartItems() {
 
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (CartItem item : items) {
-            result+= item.toString() +"\n";
+            result.append(item.toString()).append("\n");
         }
-        return result;
+        return result.toString();
     }
 
     // 장바구니 상품 데이터 반환

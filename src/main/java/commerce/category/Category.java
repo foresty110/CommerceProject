@@ -90,12 +90,12 @@ public class Category {
     }
 
     public String showProductsInfo() {
-        String info = "";
+        StringBuilder info = new StringBuilder();
         int count = 1;
         for (Product p : productList) {
-            info += count++ + ". " + p.toString() + "\n";
+            info.append(count++).append(". ").append(p.toString()).append("\n");
         }
-        return info;
+        return info.toString();
     }
 
     public String showProductsInfoOver() {

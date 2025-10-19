@@ -9,7 +9,7 @@ import commerce.category.Product;
  * 각 상품과 수량을 관리합니다.
  **/
 public class CartItem {
-    private Product product; // 상품 데이터
+    private final Product product; // 상품 데이터
     private int quantity; // 상품 수량
 
     public CartItem(Product product) {

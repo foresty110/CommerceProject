@@ -11,8 +11,8 @@ package commerce.customer;
  **/
 public class Customer {
 
-    private String name; // 고객 이름
-    private String email; // 고객 이메일
+    private final String name; // 고객 이름
+    private final String email; // 고객 이메일
     private CustomerGrade grade; // 고객 등급
 
     public Customer(String name, String email, CustomerGrade grade) {
