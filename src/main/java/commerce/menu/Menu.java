@@ -2,18 +2,27 @@ package commerce.menu;
 
 import commerce.system.ScannerSystem;
 
+/**
+ * Menu
+ * -------------------------
+ * 콘솔 기반 UI에서 메뉴 출력 및 사용자 입력을 처리하는 클래스입니다.
+ * *
+ * 주요 기능
+ * - 메뉴 정보 출력
+ * - 사용자 입력 검증 및 처리
+ * - 메뉴 타입에 따른 실행 동작 처리
+ * - 종료/뒤로가기/확인 등의 공통 동작 처리
+ **/
 public class Menu {
-    private MenuType menuType;
-    private MenuActionType menuActionType;
-    private int menuNumber;
-    private String name;
-    private String infoMessage;
-    private int userInput;
-    private String userInputStr;
-    private int inputMin;
-    private int inputMax;
-    private boolean inputCondition;
-
+    private MenuType menuType; // 메뉴 타입
+    private MenuActionType menuActionType; // 메뉴 동작 타입
+    private String name; // 메뉴 이름
+    private String infoMessage; // 메뉴 정보 메세지
+    private int userInput; // 해당 메뉴 동작에서 사용자가 입력한 값
+    private String userInputStr; // 해당 메뉴 동작에서 사용자가 입력한 값
+    private int inputMin; // 해당 메뉴에서 입력할 수 있는 최소 번호
+    private int inputMax; // 해당 메뉴에서 입력할 수 있는 최대 번호
+    private boolean inputCondition; // 특정 상황에서 허용되는 메뉴 옵션 제어용
 
     public Menu(MenuType menuType, MenuActionType menuActionType) {
         this.menuType = menuType;

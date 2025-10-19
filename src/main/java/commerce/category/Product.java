@@ -1,11 +1,21 @@
 package commerce.category;
 
+/**
+ * Product
+ * -------------------------
+ * 판매하는 상품의 정보를 관리하는 클래스입니다.
+ * *
+ * 주요 기능 *
+ * 상품의 기본 정보 조회
+ * 재고 수량 감소 (구매 시)
+ * 상품 정보 수정 (가격, 설명, 재고)
+ **/
 public class Product {
 
-    private String name;
-    private int price;
-    private String description;
-    private int stockQuantity;
+    private String name; // 상품 이름
+    private int price; // 상품 가격
+    private String description; // 상품 설명
+    private int stockQuantity; // 상품 수량
 
     public Product(String name, int price, String description, int quantity) {
         this.name = name;

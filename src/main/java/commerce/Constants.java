@@ -1,9 +1,13 @@
 package commerce;
 
-// 상수 클래스
+/**
+ * Constants
+ * -------------------------
+ * 프로젝트 전반에서 사용되는 상수 값을 관리하는 클래스입니다.
+ **/
 public class Constants {
-    public static String PASSWORD = "admin123";
-    public static int PASSWORD_ATTEMPT_LIMIT = 3;
+    public static String PASSWORD = "admin123"; // 관리자 모드 비밀번호
+    public static int PASSWORD_ATTEMPT_LIMIT = 3; // 관리자 모드 비밀번호 입력 횟수 제한
 
     public static int DISCOUNT_BRONZE = 0; // 브론즈 등급 고객의 할인율
     public static int DISCOUNT_SILVER = 5; // 실버 등급 고객의 할인율

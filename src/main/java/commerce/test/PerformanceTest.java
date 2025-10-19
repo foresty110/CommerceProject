@@ -5,7 +5,6 @@ import commerce.category.Product;
 import commerce.system.SearchEngine;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class PerformanceTest {

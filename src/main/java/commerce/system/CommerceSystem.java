@@ -14,22 +14,34 @@ import commerce.menu.MenuType;
 import commerce.admin.AdminSystemType;
 import commerce.test.PerformanceTest;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * CommerceSystem
+ * -------------------------
+ * 커머스 시스템의 핵심 컨트롤러 클래스입니다.
+ * - 사용자 모드(상품 조회, 필터, 장바구니, 주문)와
+ * - 관리자 모드(상품 추가/수정/삭제)를 모두 관리한다.
+ * *
+ * 주요 기능
+ * - 카테고리, 상품, 메뉴 데이터 생성 및 관리
+ * - 사용자 입력을 기반으로 한 상호작용 흐름 제어
+ * - 사용자 모드(상품 조회, 필터, 장바구니, 주문)
+ * - 관리자 모드(상품 추가/수정/삭제)
+ **/
 public class CommerceSystem {
 
-    private final ScannerSystem scannerSystem = new ScannerSystem();
-    private final PerformanceTest performanceTest = new PerformanceTest();
+    private final ScannerSystem scannerSystem = new ScannerSystem(); //사용자 입력 관리
+    private final PerformanceTest performanceTest = new PerformanceTest(); //상품 검색 성능 테스트
 
-    private List<Menu> menuList = new ArrayList<>();
-    private List<Category> categories = new ArrayList<>();
+    private final List<Menu> menuList = new ArrayList<>(); //메뉴 목록 관리
+    private final List<Category> categories = new ArrayList<>(); //카테고리 목록 관리
 
-    private final Cart cart = new Cart();
-    private final Customer customer = new Customer("김자바", "java123@gamil.com", CustomerGrade.PLATINUM);
+    private final Cart cart = new Cart(); //장바구니
+    private final Customer customer = new Customer("김자바", "java123@gamil.com", CustomerGrade.PLATINUM); //테스트용 고객 정보
 
-    private int curCategory;
+    private int curCategory;//현재 선택된 카테고리 인덱스
 
     public void addCategory(Category category) {
         categories.add(category);
@@ -678,7 +690,6 @@ public class CommerceSystem {
 
         return true;
     }
-
 
     public boolean manageDeleteProduct() {
 

@@ -3,10 +3,20 @@ package commerce.system;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * ScannerSystem
+ * -------------------------
+ * 콘솔 입력을 담당하는 클래스입나.
+ * *
+ * 주요 기능
+ * - 숫자 입력 범위 검증
+ * - 빈 문자열 입력 방지
+ **/
 public class ScannerSystem {
 
-    static Scanner scanner = new Scanner(System.in);
+    static Scanner scanner = new Scanner(System.in); // 콘솔 입력 스캐너
 
+    // 숫자 입력 범위 검증
     public Integer getValidatedInput(int min, int max) {
 
         int userInput;
@@ -34,6 +44,7 @@ public class ScannerSystem {
         return userInput;
     }
 
+    // 파라미터로 전달받은 배열 범위내 입력 검증
     public Integer getValidatedInput(int[] validNumbers) {
 
         int userInput;
@@ -69,6 +80,7 @@ public class ScannerSystem {
         return userInput;
     }
 
+    // 문자열 입력 검증
     public String getValidatedInput() {
 
         String userInput;

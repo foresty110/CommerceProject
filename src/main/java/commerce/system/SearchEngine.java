@@ -5,6 +5,17 @@ import commerce.category.Product;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * SearchEngine
+ * -------------------------
+ * 상품 목록에서 이름으로 검색하는 엔진
+ * *
+ * 주요 기능
+ * - 재귀,반복 방식의 이진 탐색
+ * - 선형 탐색
+ * - 비교 횟수 추적
+ **/
+
 public class SearchEngine {
     private List<Product> sortedProducts = new ArrayList<>();
     private int compareCount = 0;

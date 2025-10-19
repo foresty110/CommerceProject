@@ -5,9 +5,13 @@ import commerce.category.Product;
 import java.util.ArrayList;
 import java.util.List;
 
+/*Cart 클래스
+-------------------------
+- 사용자의 장바구니 상품을 관리하는 클래스
+- 장바구니에 상품 추가, 삭제, 조회, 구매 기능을 제공합니다.*/
 public class Cart {
 
-    private List<CartItem> items = new ArrayList<>();
+    private List<CartItem> items = new ArrayList<>(); // 장바구니에 추가된 상품 목록 리스트
 
     public void addItem(CartItem newItem) {
 
@@ -24,6 +28,7 @@ public class Cart {
         newItem.addQuantity();
     }
 
+    //장바구니에서 단일 상품 제거
     public boolean removeItem(String findItem) {
 
         CartItem matchItem = items.stream()
@@ -40,6 +45,7 @@ public class Cart {
 
     }
 
+    // 장바구니에 상품 추가
     public boolean canAddToCart(Product product) {
 
         if (product.getStockQuantity() < 1) {
@@ -48,10 +54,12 @@ public class Cart {
         return true;
     }
 
+    // 장바구니에 담긴 상품 개수 반환
     public int getCartItemAmount() {
         return items.size();
     }
 
+    // 장바구니에 담긴 상품 정보 출력
     public String showCartItems() {
 
         String result = "";
@@ -61,10 +69,12 @@ public class Cart {
         return result;
     }
 
+    // 장바구니 상품 데이터 반환
     public List<CartItem> getCartItems() {
         return items;
     }
 
+    // 장바구니 상품 구매 처리
     public void purchase() {
 
         for (CartItem item : items) {

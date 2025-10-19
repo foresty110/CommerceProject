@@ -104,7 +104,7 @@ public class Category {
 
         return productList.stream()
                 .filter(product -> product.getPrice() > Constants.PRODUCT_FILTER_PRICE)
-                .map(product -> count.getAndIncrement() + ". " + product.toString())
+                .map(product -> count.getAndIncrement() + ". " + product)
                 .collect(Collectors.joining("\n"));
     }
     public String showProductsInfoUnder() {
@@ -113,7 +113,7 @@ public class Category {
 
         return productList.stream()
                 .filter(product -> product.getPrice() <= Constants.PRODUCT_FILTER_PRICE)
-                .map(product -> count.getAndIncrement() + ". " + product.toString())
+                .map(product -> count.getAndIncrement() + ". " + product)
                 .collect(Collectors.joining("\n"));
     }
 

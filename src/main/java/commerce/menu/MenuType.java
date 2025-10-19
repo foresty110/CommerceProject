@@ -1,5 +1,11 @@
 package commerce.menu;
 
+/**
+ * MenuType
+ * -------------------------
+ * 플랫폼 메뉴 종류를 나타내는 Enum 클래스입니다.
+ * 각 메뉴는 고유한 string 값(메뉴 이름)과 매핑됩니다.
+ **/
 public enum MenuType {
     MAIN("커머스 플랫폼 메인"),
     SHOW_PRODUCT("상품 목록 보기"),
