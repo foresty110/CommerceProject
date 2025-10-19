@@ -8,7 +8,7 @@ package commerce.menu;
  **/
 public enum MenuType {
     MAIN("커머스 플랫폼 메인"),
-    SHOW_PRODUCT("상품 목록 보기"),
+    SHOW_PRODUCT("상품 목록 보기 - 카테고리 선택"),
     SHOW_FILTER("상품 목록 보기 - 필터 선택"),
     ADDCART_CONFIM("장바구니 추가 확인"),
     CONFIRM_ORDER("주문 확정"),

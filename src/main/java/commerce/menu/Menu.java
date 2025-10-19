@@ -1,5 +1,6 @@
 package commerce.menu;
 
+import commerce.system.CommerceSystem;
 import commerce.system.ScannerSystem;
 
 /**
@@ -13,27 +14,31 @@ import commerce.system.ScannerSystem;
  * - 메뉴 타입에 따른 실행 동작 처리
  * - 종료/뒤로가기/확인 등의 공통 동작 처리
  **/
-public class Menu {
-    private final MenuType menuType; // 메뉴 타입
-    private final MenuActionType menuActionType; //
-    private String infoMessage; // 메뉴 정보 메세지
-    private int userInput; // 해당 메뉴 동작에서 사용자가 입력한 값
-    private String userInputStr; // 해당 메뉴 동작에서 사용자가 입력한 값
-    private int inputMin; // 해당 메뉴에서 입력할 수 있는 최소 번호
-    private int inputMax; // 해당 메뉴에서 입력할 수 있는 최대 번호
-    private boolean inputCondition; // 특정 상황에서 허용되는 메뉴 옵션 제어용
+public abstract class Menu {
 
-    public Menu(MenuType menuType, MenuActionType menuActionType) {
+    protected final ScannerSystem scannerSystem = new ScannerSystem();
+
+    protected MenuType menuType;
+     private String infoMessage; // 메뉴 정보 메세지
+    protected int userInput; // 해당 메뉴 동작에서 사용자가 입력한 값
+    protected String userInputStr; // 해당 메뉴 동작에서 사용자가 입력한 값
+    protected boolean inputCondition;
+    protected int inputMin;
+    protected int inputMax;
+
+    protected String setValue;
+
+    public Menu(MenuType menuType,String infoMessage) {
         this.menuType = menuType;
-        this.menuActionType = menuActionType;
-    }
+        this.infoMessage = infoMessage;
+  }
 
-    public MenuType getMenuType() {
-        return menuType;
-    }
+      public MenuType getMenuType() {
+            return menuType;
+      }
 
     public void showInfoMessage() {
-        System.out.println("[ " + this.menuType.getName() + " ]");
+        System.out.println("[ " + menuType.getName() + " ]");
         System.out.println(infoMessage);
     }
 
@@ -46,93 +51,34 @@ public class Menu {
         inputMax = max;
     }
 
+    public void setInputCondition(boolean inputCondition) {
+      this.inputCondition = inputCondition;
+    }
+
+    public void endProgress(){
+
+        CommerceSystem.userInput = userInput;
+    }
+
     public String getUserInputStr() {
         return userInputStr;
     }
 
-    public void setCondition(boolean condition) {
-        inputCondition = condition;
-    }
-
-    public boolean menuProgress() {
+    public void progress(){
         showInfoMessage();
-
-        if (menuType == MenuType.MAIN) {
-            return inputMenu(inputCondition);
-        } else if (menuType == MenuType.MANAGEMENT_MODIFY_PRODUCT) {
-            return inputMenu();
-        }
-        else{
-            return inputMenu(inputMin, inputMax);
-        }
+        menuProgress();
+        endProgress();
     }
+    public abstract void menuProgress() ;
 
-    public boolean inputMenu(boolean condition) {
+    public void infoMessage(String infoMessage)
+    {
+        this.infoMessage = infoMessage;
+    };
 
-        ScannerSystem scannerSystem = new ScannerSystem();
-
-        if (condition) {
-            userInput = scannerSystem.getValidatedInput(new int[]{0, 1, 2, 3, 4, 5, 6, 7});
-        } else {
-            userInput = scannerSystem.getValidatedInput(new int[]{0, 1, 2, 3, 6, 7});
-        }
-
-        //프로그램 종료
-        return isSelectConfirm(userInput);
-    }
-
-    public boolean inputMenu(int min, int max) {
-
-        ScannerSystem scannerSystem = new ScannerSystem();
-
-        userInput = scannerSystem.getValidatedInput(min, max);
-
-        //프로그램 종료
-        return isSelectConfirm(userInput);
-    }
-
-    public boolean inputMenu(){
-        ScannerSystem scannerSystem = new ScannerSystem();
-
-        userInputStr = scannerSystem.getValidatedInput();
-
-        return true;
-    }
 
     public int getUserInput() {
         return userInput;
     }
 
-    public boolean isSelectConfirm(int select) {
-
-        switch (menuActionType) {
-            case CANCEL_OR_CONFIRM:
-
-                if (select == 2) {
-                    System.out.println(this.menuType.name() + "(을)를 취소합니다.");
-                    return false;
-                }
-                break;
-            case BACK:
-                if (select == 0) {
-                    System.out.println(this.menuType.name() + "으로 돌아갑니다.");
-                    return false;
-                }
-                break;
-            case EXIT:
-                if (select == 0) {
-                    System.out.println("커머스 플랫폼을 종료합니다.");
-                    return false;
-                }
-                break;
-            case SELECT:
-                if (select == 0) {
-                    System.out.println("돌아가기를 선택하였습니다.");
-                    return false;
-                }
-                break;
-        }
-
-        return true;
-    }
 }
